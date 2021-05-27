@@ -1,0 +1,24 @@
+.card {
+    min-height: 400px;
+    
+    background: linear-gradient(to bottom, #fefcea, #e6f1f7);
+    
+}
+
+.picture {
+    height:120px;
+    width:100%;
+}
+
+.title:hover {
+    color:cadetblue;
+}
+
+.footer, .header {
+    min-height: 50px;
+}
+
+#inform {
+    color:rgb(3, 49, 3);
+}
+
