@@ -4,15 +4,17 @@ class Parse {
     public static function parseMs() {
 
         global $mysqli;
+        global $guidesArr;
+        global $guideId;
         
         $html = file_get_html('https://mosstreets.ru/schedule/');
         $i=0;
-        $site = 'Mossreets.ru';
+        $site = 'Mosstreets.ru';
 
         foreach($html->find('div.trio') as $div){
             $divmini = $div->find('div.mini',0);         
             $url = explode('image:',$divmini = $div->find('div.mini',0)->getAttribute('style'));
-            $img_url = $url[1];
+            $img_url = mb_substr(mb_substr($url[1],5),0,-2);
             $link = $div->find('p.trio_header a',0)->href;
             
             $title = $div->find('div.desc p',0)->plaintext;
@@ -22,14 +24,24 @@ class Parse {
             $date = '2021-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
             $time = substr($dateStr,16,5).':00';
             $price = $div->find('div.desc p',2)->plaintext;
+            
             if( $price == 'бесплатная экскурсия') {
                 $free = true;
-            } else {$free = false;
-                }    
+            } else {$free = false;}    
+
             $guide = $div->find('span.guide',0)->plaintext;
 
-            $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide`, `img_url`, `free`, `link`, `descr`)
-            VALUES ('$site','$date','$time','$title','$guide','$img_url','$free','$link','$descr')");
+            $number = array_search($guide,$guidesArr);
+            if ($number == false) {
+                $guidesArr[$guideId] = $guide;
+                $mysqli->query("INSERT INTO `guides` (`id`, `guide`) VALUES ('$guideId', '$guide')");
+                $number = $guideId;
+                ++$guideId;
+            } 
+
+            $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+            VALUES ('$site','$date','$time','$title','$number','$img_url','$free','$link','$descr')");
+            
             
             $i=$i+1;
             if ($i>7) {break;} 
@@ -39,6 +51,8 @@ class Parse {
     public static function parseMw() {
 
         global $mysqli;
+        global $guidesArr;
+        global $guideId;
         
         $html = file_get_html('http://moscowwalking.ru/#schedule');
         $i=0;
@@ -61,7 +75,7 @@ class Parse {
             }elseif(strpos($dateStr,'декабря')) {$date = '2021-12-'.$day;
             }else {$date = '2021-01-01';}    
 
-            $site = 'moscowwalking.ru';
+            $site = 'Moscowwalking.ru';
 
             foreach($div->find('strong') as $divmini){
                 $link = 'http://moscowwalking.ru'.$divmini->find('a',0)->href;
@@ -77,16 +91,76 @@ class Parse {
                 }else {$free = true;}
                 $guide = $divmini->find('span',0)->plaintext;
 
-                $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide`, `img_url`, `free`, `link`, `descr`)
-                    VALUES ('$site','$date','$time','$title','$guide','$img_url','$free','$link','$descr')");
+                if(substr($title,-1,1) == ')'){
+                    $title = mb_substr($title,0,-9);
+                }
+
+                $number = array_search($guide,$guidesArr);
+                if ($number == false) {
+                    $guidesArr[$guideId] = $guide;
+                    $mysqli->query("INSERT INTO `guides` (`id`, `guide`) VALUES ('$guideId', '$guide')");
+                    $number = $guideId;
+                    ++$guideId;
+                } 
+
+                $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+                    VALUES ('$site','$date','$time','$title','$number','$img_url','$free','$link','$descr')");
                 
             }
             $i=$i+1;
-            if ($i>1) {break;}
+            if ($i>2) {break;}
         }
  
     }
 
+    public static function parsePu() {
+
+        global $mysqli;
+        global $guidesArr;
+        global $guideId;
+        
+        $html = file_get_html('https://poulitcam.ru/afisha.html');
+        $i=0;
+        $site = 'Poulitcam.ru';
+        
+        //$html = str_get_html($html);
+        $first = $html->find('h3',0);
+        var_dump($first);
+
+        foreach($html->find('a.uk-panel.uk-panel-box.uk-text-center.uk-link-reset') as $div){
+            var_dump($div);
+            $link = $div->find('a.uk-panel.uk-panel-box.uk-text-center.uk-link-reset',0)->href;
+            $link = 'http://poulitcam.ru'.$link;
+            
+            $strong = $div->find('strong',0)->plaintext;
+            if($strong == 'ПЛАТНАЯ'){$free = false;
+            }else{$free = true;}
+
+            $img_url = $div->find('img',0)->getAttribute('src');
+            $title = $div->find('h3',0)->plaintext;
+            $dateStr = $div->find('span',0)->plaintext;
+            $date = '2021-'.substr($dateStr,7,2).'-'.substr($dateStr,4,2);
+            $time = substr($dateStr,12,5).':00';
+            $guide = $div->find('strong',1)->plaintext;
+            $htmlInner = file_get_html( $link );
+            $descr = $htmlInner->find('span',0)->plaintext;
+
+            $number = array_search($guide,$guidesArr);
+            if ($number == false) {
+                $guidesArr[$guideId] = $guide;
+                $mysqli->query("INSERT INTO `guides` (`id`, `guide`) VALUES ('$guideId', '$guide')");
+                $number = $guideId;
+                ++$guideId;
+            } 
+
+            $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+            VALUES ('$site','$date','$time','$title','$number','$img_url','$free','$link','$descr')");
+            
+            
+            $i=$i+1;
+            if ($i>10) {break;} 
+        } 
+    }
    
 }
 

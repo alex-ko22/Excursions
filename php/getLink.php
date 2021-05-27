@@ -103,4 +103,21 @@ class Parse {
     }
 }
 
+fetch("today").then(response=>response.json())
+        .then(result=>{
+          result.forEach((recs,index)=>{
+          recs += `
+            <tr>
+              <th scope="row">${index+1}</th>
+              <td>${recs.title}</td>
+              <td>${recs.date}</td>
+              <td>${recs.time}</td>
+              
+            </tr>
+          `
+          });
+        }
+      
+      tbody.innerHTML = recs;
+
 ?>
