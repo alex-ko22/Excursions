@@ -13,7 +13,7 @@
   <body>
     <div class="container">
       <div class="row header my-3 border border-secondary"></div>
-        <form class="row filter bg-light" onsubmit="showRecsTable(this); return false;">
+        <form class="row filter bg-light" onsubmit="showRecs(this); return false;">
             <div class="filter-site col-3" >
                 <p>Сайты для загрузки</p>
                 <div class="form-check">
@@ -66,18 +66,20 @@
                 <button type="submit" class="btn btn-primary">Показать</button>
               </div>  
               <div class="col-2 offset-md-1">Показывать в виде:</div>
-              <div class="col-1 form-check">
-                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable">
-                <label class="form-check-label" for="flexRadioDefault1">
-                  Таблицы
-                </label>
-              </div>
-              <div class="col-2 form-check">
-                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
-                  Карточек
-                </label>
-              </div>    
+              <div class="col-2" >
+                <div class="form-check mt-0">
+                  <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable">
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Таблицы
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Карточек
+                  </label>
+                </div>  
+              </div>  
               <div class="col-3 offset-md-1">
                 <p id="inform"></p>
               </div>     
