@@ -1,8 +1,8 @@
 .card {
     min-height: 400px;
-    
+    box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
     background: linear-gradient(to bottom, #fefcea, #e6f1f7);
-    
+        
 }
 
 .picture {
@@ -16,9 +16,16 @@
 
 .footer, .header {
     min-height: 50px;
+    
 }
 
 #inform {
     color:rgb(3, 49, 3);
+}
+
+
+#text {
+    color:cornsilk;
+    opacity: 80%;
 }
 

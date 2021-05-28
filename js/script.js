@@ -22,17 +22,17 @@ function showRecsTable(form) {
     let code = `
       <tr>
         <th>#</th>
-        <th>Название</th>
+        <th><em>Название</em></th>
         <th>$</th>
-        <th>Экскурсовод</th>
-        <th>Дата и время</th>
-        <th>Перейти к экскурсии</th>
+        <th><em>Экскурсовод</em></th>
+        <th><em>Дата и время</em></th>
+        <th><em>Перейти к экскурсии на:</em></th>
       </tr>
     `;
     let tbody = document.getElementById("tbody");
     let free = '';
     let dayStr = '';
-    let i = 0;
+    let i = -1;
 
     const formData = new FormData(form);
     
@@ -40,8 +40,7 @@ function showRecsTable(form) {
       method: "POST",
       body: formData
     }).then(response=>response.json())
-      .then(result=>{
-        result.forEach((recs,index)=>{
+      .then(result=>{result.forEach((recs,index)=>{
           if (recs.free == 1){free = ''
           }else{free = '$'}
 
@@ -86,7 +85,7 @@ function showTodayRecsCard() {
   let cards = document.getElementById("cards");
   let free = '';
   let dayStr = '';
-  let i = 0;
+  let i = -1;
   
   fetch("php/getTodayRecs.php").then(response=>response.json())
     .then(result=>{
@@ -98,8 +97,8 @@ function showTodayRecsCard() {
         dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
         
         code += `
-        <div class="card text-center border border-secondary">
-          <img src=${recs.img_url} class="picture my-2">
+        <div class="card text-center border border-1">
+          <img src="${recs.img_url}" class="picture my-2">
           <h5 class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</h5>
           <p>${dayStr}</p>
           <p>${recs.guide}</p>
@@ -121,7 +120,7 @@ function showRecsCard(form) {
   let cards = document.getElementById("cards");
   let free = '';
   let dayStr = '';
-  let i = 0;
+  let i = -1;
   
   const formData = new FormData(form);
   
@@ -138,8 +137,8 @@ function showRecsCard(form) {
         dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
         
         code += `
-        <div class="card text-center border border-secondary">
-          <img src=${recs.img_url} class="picture my-2">
+        <div class="card text-center border border-1">
+          <img src="${recs.img_url}" class="picture my-2">
           <h5 class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</h5>
           <p>${dayStr}</p>
           <p>${recs.guide}</p>

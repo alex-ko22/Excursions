@@ -1,8 +1,6 @@
 <?php
     header('Content-type: text/html; charset=utf-8');
-    session_start();
-    
-    $mysqli = new mysqli('localhost','root','','excursions');
+    require_once('db.php');
 
     $result = mysqli_query($mysqli,"SELECT *
      FROM `excursion` LEFT JOIN `guides` ON `excursion`.`guide_id` = `guides`.`id`

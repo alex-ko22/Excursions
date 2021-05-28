@@ -1,8 +1,6 @@
  <?php
     header('Content-type: text/html; charset=utf-8');
-    session_start();
-    
-    $mysqli = new mysqli('localhost','root','','excursions');
+    require_once('db.php');
 
     if(array_key_exists('site1',$_POST) && !(array_key_exists('site2',$_POST))){
         $site = ' AND `site` = "Mosstreets.ru"';
@@ -26,19 +24,16 @@
    
     $date = $_POST['date'];
     $guide = $_POST['guide'];
- 
    
     if($guide == '0'){
         $guideStr = '';
     }else{
         $guideStr = ' AND `guide_id` = '.$guide;
     } 
- 
-    
 
     // Формируем запрос 
 
-    $where = '`date` <= CURRENT_DATE() + '.$date.$guideStr.$site.$free;
+    $where = '`date` <= CURRENT_DATE() + '.$date.$guideStr.$site.$free.' ORDER BY `date`, `time`';
 
     $result = mysqli_query($mysqli,"SELECT *
      FROM `excursion` LEFT JOIN `guides` ON `excursion`.`guide_id` = `guides`.`id`

@@ -12,9 +12,15 @@
   </head>
   <body>
     <div class="container">
-      <div class="row header my-3 border border-secondary"></div>
-        <form class="row filter bg-light" onsubmit="showRecs(this); return false;">
-            <div class="filter-site col-3" >
+      <div class="row header my-3 position-relative">
+        <img src="img/DSC01860.jpg" class="img-fluid" alt="">
+        <div class="position-absolute top-50 start-0 text-center">
+         <h1 id="text">Все экскурсии по Москве в одном месте!</h1>
+        </div>
+      </div>
+      <form class="filter bg-light" onsubmit="showRecs(this); return false;">
+          <div class="row row-cols-sm-4">
+            <div class="filter-site" >
                 <p>Сайты для загрузки</p>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="1" name="site1" id="mosstreets" checked>
@@ -29,7 +35,7 @@
                     </label>
                 </div>
             </div>
-            <div class="filter-free col-3" >
+            <div class="filter-free" >
               <p>Тип</p>
               <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="1" name="free1" id="free" checked>
@@ -44,7 +50,7 @@
                   </label>
               </div>
           </div>
-            <div class="filter-date col-3">
+            <div class="filter-date col">
               <p>Период</p>
               <select class="form-select" name="date" aria-label="Default select example">
                 <option selected value="0">На сегодня</option>
@@ -56,43 +62,45 @@
                 <option value="6">На неделю</option> 
               </select>
             </div>
-            <div class="filter-guide col-3">
+            <div class="filter-guide">
               <p>Экскурсовод</p>
               <select class="form-select" aria-label="Default select example" name="guide" id="guides-list">  
               </select>
             </div>
-            <div class="row my-3 row-submit">
-              <div class="col-2">
-                <button type="submit" class="btn btn-primary">Показать</button>
+          </div>
+          <div class="row my-3 row-submit row-cols-md-4">
+            <div>
+              <button type="submit" class="btn btn-primary mt-3">Показать</button>
+            </div>          
+            <div>Показывать в виде:</div>
+            <div> 
+              <div class="form-check mt-0">
+                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
+                <label class="form-check-label" for="flexRadioDefault2">
+                  Карточек
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable">
+                <label class="form-check-label" for="flexRadioDefault1">
+                  Таблицы
+                </label>
               </div>  
-              <div class="col-2 offset-md-1">Показывать в виде:</div>
-              <div class="col-2" >
-                <div class="form-check mt-0">
-                  <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable">
-                  <label class="form-check-label" for="flexRadioDefault1">
-                    Таблицы
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
-                  <label class="form-check-label" for="flexRadioDefault2">
-                    Карточек
-                  </label>
-                </div>  
-              </div>  
-              <div class="col-3 offset-md-1">
-                <p id="inform"></p>
-              </div>     
-            </div>
-        </form>
+            </div>     
+            <div>
+              <p id="inform"></p>
+            </div>     
+          </div>
+      </form>
+      <div class="content">
         <table class="table table-striped" id="tbody"></table>
-      <div id="cards" class="row row-cols-4 gy-4"></div>  
-      <div class="row footer my-3 border border-secondary"></div> 
+        <div id="cards" class="row row-cols-2 row-cols-lg-5 row-cols-md-3 gy-2"></div> 
+      </div> 
+      <div class="row footer my-3 border border-secondary"></div>   
     </div>
     
     <script src="js/script.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-    
       
   </body>
 </html>
