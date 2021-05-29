@@ -15,7 +15,7 @@
       <div class="row header my-3 position-relative">
         <img src="img/DSC01860.jpg" class="img-fluid" alt="">
         <div class="position-absolute top-50 start-0 text-center">
-         <h1 id="text">Все экскурсии по Москве в одном месте!</h1>
+         <h1 id="text">Все экскурсии по Москве</h1>
         </div>
       </div>
       <form class="filter bg-light" onsubmit="showRecs(this); return false;">
@@ -72,7 +72,7 @@
             <div>
               <button type="submit" class="btn btn-primary mt-3">Показать</button>
             </div>          
-            <div>Показывать в виде:</div>
+            <div class="mt-3 text-end">Показывать в виде:</div>
             <div> 
               <div class="form-check mt-0">
                 <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
@@ -88,18 +88,21 @@
               </div>  
             </div>     
             <div>
-              <p id="inform"></p>
+              <p id="inform" class="mt-1 text-end"></p>
             </div>     
           </div>
       </form>
       <div class="content">
         <table class="table table-striped" id="tbody"></table>
-        <div id="cards" class="row row-cols-2 row-cols-lg-5 row-cols-md-3 gy-2"></div> 
+        <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 gy-2"></div> 
       </div> 
-      <div class="row footer my-3 border border-secondary"></div>   
+         
+    </div>
+    <div class="footer">
+      <p id="copiright" align="center">© 2021 Copyright: AEK</p>
     </div>
     
-    <script src="js/script.js"></script> 
+    <script src="js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
       
   </body>

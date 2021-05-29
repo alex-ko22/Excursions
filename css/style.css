@@ -1,31 +1,35 @@
 .card {
     min-height: 400px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
-    background: linear-gradient(to bottom, #fefcea, #e6f1f7);
-        
+    background: linear-gradient(to bottom, #fefcea, #e6f1f7);       
 }
-
 .picture {
     height:120px;
     width:100%;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
 }
-
 .title:hover {
     color:cadetblue;
 }
-
 .footer, .header {
-    min-height: 50px;
-    
+    min-height: 50px; 
 }
-
 #inform {
     color:rgb(3, 49, 3);
 }
-
-
 #text {
     color:cornsilk;
     opacity: 80%;
+}
+.container {
+    min-height: 90vh;
+}
+.footer {
+    width:100%;
+    max-height:10vh;  
+    
+}
+.t-heads th {
+    color:darkgray;
 }
 

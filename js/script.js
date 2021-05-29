@@ -20,13 +20,13 @@ function showRecs(form) {
 
 function showRecsTable(form) {
     let code = `
-      <tr>
+      <tr class="t-heads">
         <th>#</th>
         <th><em>Название</em></th>
         <th>$</th>
         <th><em>Экскурсовод</em></th>
         <th><em>Дата и время</em></th>
-        <th><em>Перейти к экскурсии на:</em></th>
+        <th><em>Перейти к экскурсии:</em></th>
       </tr>
     `;
     let tbody = document.getElementById("tbody");
@@ -98,7 +98,7 @@ function showTodayRecsCard() {
         
         code += `
         <div class="card text-center border border-1">
-          <img src="${recs.img_url}" class="picture my-2">
+          <img src="${recs.img_url}" class="picture my-2 class="img-fluid">
           <h5 class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</h5>
           <p>${dayStr}</p>
           <p>${recs.guide}</p>

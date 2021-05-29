@@ -12,7 +12,7 @@ $guidesArr = array();
 $guideId = 1;
 
 // Введите количество дней для загрузки в базу
-$days = 3;
+$days = 7;
 
 parseMs($days);
 parseMw($days);
