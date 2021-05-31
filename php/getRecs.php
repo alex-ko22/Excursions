@@ -1,4 +1,6 @@
  <?php
+    // Функция формирования запроса к базе
+    
     header('Content-type: text/html; charset=utf-8');
     require_once('db.php');
 
@@ -33,7 +35,7 @@
 
     // Формируем запрос 
 
-    $where = '`date` <= CURRENT_DATE() + '.$date.$guideStr.$site.$free.' ORDER BY `date`, `time`';
+    $where = '`date` BETWEEN CURRENT_DATE AND (DATE_ADD(CURRENT_DATE, INTERVAL '.$date.' DAY))'.$guideStr.$site.$free.' ORDER BY `date`, `time`';
 
     $result = mysqli_query($mysqli,"SELECT *
      FROM `excursion` LEFT JOIN `guides` ON `excursion`.`guide_id` = `guides`.`id`

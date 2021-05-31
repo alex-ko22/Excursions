@@ -4,9 +4,12 @@
     background: linear-gradient(to bottom, #fefcea, #e6f1f7);       
 }
 .picture {
-    height:120px;
+    max-height:120px;
     width:100%;
     box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+.title {
+    color:midnightblue;
 }
 .title:hover {
     color:cadetblue;

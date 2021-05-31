@@ -15,13 +15,13 @@
       <div class="row header my-3 position-relative">
         <img src="img/DSC01860.jpg" class="img-fluid" alt="">
         <div class="position-absolute top-50 start-0 text-center">
-         <h1 id="text">Все экскурсии по Москве</h1>
+         <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
         </div>
       </div>
       <form class="filter bg-light" onsubmit="showRecs(this); return false;">
           <div class="row row-cols-sm-4">
             <div class="filter-site" >
-                <p>Сайты для загрузки</p>
+                <p class="mb-1">Сайты для загрузки</p>
                 <div class="form-check">
                     <input class="form-check-input" type="checkbox" value="1" name="site1" id="mosstreets" checked>
                     <label class="form-check-label" for="mosstreets">
@@ -36,7 +36,7 @@
                 </div>
             </div>
             <div class="filter-free" >
-              <p>Тип</p>
+              <p class="mb-1">Тип</p>
               <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="1" name="free1" id="free" checked>
                   <label class="form-check-label" for="free">
@@ -51,7 +51,7 @@
               </div>
           </div>
             <div class="filter-date col">
-              <p>Период</p>
+              <p class="mb-1">Период</p>
               <select class="form-select" name="date" aria-label="Default select example">
                 <option selected value="0">На сегодня</option>
                 <option value="1">На 2 дня</option>
@@ -63,16 +63,14 @@
               </select>
             </div>
             <div class="filter-guide">
-              <p>Экскурсовод</p>
+              <p class="mb-1">Экскурсовод</p>
               <select class="form-select" aria-label="Default select example" name="guide" id="guides-list">  
               </select>
             </div>
           </div>
-          <div class="row my-3 row-submit row-cols-md-4">
-            <div>
-              <button type="submit" class="btn btn-primary mt-3">Показать</button>
-            </div>          
-            <div class="mt-3 text-end">Показывать в виде:</div>
+          <div class="row my-3 row-submit row-cols-2 row-cols-md-4">
+                      
+            <div class="mt-1 text-end">Показывать в виде:</div>
             <div> 
               <div class="form-check mt-0">
                 <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
@@ -86,6 +84,9 @@
                   Таблицы
                 </label>
               </div>  
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary mt-1">Показать</button>
             </div>     
             <div>
               <p id="inform" class="mt-1 text-end"></p>
@@ -94,7 +95,7 @@
       </form>
       <div class="content">
         <table class="table table-striped" id="tbody"></table>
-        <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 gy-2"></div> 
+        <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 gy-2 justify-content-center"></div> 
       </div> 
          
     </div>

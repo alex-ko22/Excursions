@@ -3,6 +3,8 @@
 loadGuides();
 showTodayRecsCard();
 
+// Функция выбора вида показа - таблица или карточка
+
 function showRecs(form) {
  
   let tbody = document.getElementById("tbody");
@@ -17,6 +19,8 @@ function showRecs(form) {
     showRecsCard(form);
   }
 }
+
+// Функция запроса и отображения записей в виде таблицы  по фильтру
 
 function showRecsTable(form) {
     let code = `
@@ -47,7 +51,7 @@ function showRecsTable(form) {
           dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
 
           code += `
-          <tr>
+          <tr class="t-row">
             <td>${index+1}</td>
             <th scope="row" class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</th>
             <td>${free}</td>            
@@ -62,6 +66,8 @@ function showRecsTable(form) {
         tbody.innerHTML = code;
       }) 
 }   
+
+// Функция получения гидов из базы и помещение их в селектор
 
 function loadGuides() {
 
@@ -78,6 +84,8 @@ function loadGuides() {
     guidesList.innerHTML = code;
   })
 } 
+
+// Функция запроса и отображения записей в виде карточек за текущую дату
 
 function showTodayRecsCard() {
 
@@ -113,6 +121,8 @@ function showTodayRecsCard() {
       cards.innerHTML = code;
     }) 
 }   
+
+// Функция запроса и отображения записей в виде карточек  по фильтру
 
 function showRecsCard(form) {
 
