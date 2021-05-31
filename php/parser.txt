@@ -2,6 +2,7 @@
 header('Content-type: text/html; charset=utf-8');
 require_once('simple_html_dom.php');
 require_once('db.php');
+require_once('classes/Parse.php');
 
 $mysqli -> query("TRUNCATE guides");
 $mysqli -> query("SET FOREIGN_KEY_CHECKS = 0");
@@ -85,23 +86,11 @@ function parseMw($days) {
     $i=0;
     
     foreach($html->find('div.t145__col.t-col.t-col_3') as $div){
+       
         $dateStr = $div->find('div.t145__title.t-title',0)->plaintext;
-        
         $day = substr($dateStr,0,2);
-        if (strpos($dateStr,'января')) {$date = '2021-01-'.$day;
-        }elseif(strpos($dateStr,'февраля')) {$date = '2021-02-'.$day;
-        }elseif(strpos($dateStr,'марта')) {$date = '2021-03-'.$day;
-        }elseif(strpos($dateStr,'апреля')) {$date = '2021-04-'.$day;
-        }elseif(strpos($dateStr,'мая')) {$date = '2021-05-'.$day;
-        }elseif(strpos($dateStr,'июня')) {$date = '2021-06-'.$day;
-        }elseif(strpos($dateStr,'июля')) {$date = '2021-07-'.$day;
-        }elseif(strpos($dateStr,'августа')) {$date = '2021-08-'.$day;        
-        }elseif(strpos($dateStr,'сентября')) {$date = '2021-09-'.$day;
-        }elseif(strpos($dateStr,'октября')) {$date = '2021-10-'.$day;
-        }elseif(strpos($dateStr,'ноября')) {$date = '2021-11-'.$day;
-        }elseif(strpos($dateStr,'декабря')) {$date = '2021-12-'.$day;
-        }else {$date = '2021-01-01';}   
-        
+        $date = Parse::formDateMonth($dateStr,$day);
+               
         if( strtotime($date) >= (date('U') + ($days*24*60*60)) ) {
             break;
         }
