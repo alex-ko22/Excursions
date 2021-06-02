@@ -1,7 +1,11 @@
 "use strict";
 
+let btn = document.getElementById('btn');
+
 loadGuides();
-showTodayRecsCard();
+
+setTimeout(()=>{btn.click();},1000);
+
 
 // Функция выбора вида показа - таблица или карточка
 
@@ -37,6 +41,7 @@ function showRecsTable(form) {
     let free = '';
     let dayStr = '';
     let i = -1;
+    let fav = ' ';
 
     const formData = new FormData(form);
     
@@ -48,6 +53,8 @@ function showRecsTable(form) {
           if (recs.free == 1){free = ''
           }else{free = '$'}
 
+          fav = getFavicon(recs.site);
+
           dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
 
           code += `
@@ -57,7 +64,7 @@ function showRecsTable(form) {
             <td>${free}</td>            
             <td>${recs.guide}</td>
             <td>${dayStr}</td>
-            <td><a href="${recs.link}">${recs.site}</a></td>
+            <td><img class = "favicon" src = "${fav}"><a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a></td>
           </tr>
         ` 
         i = index;
@@ -70,9 +77,11 @@ function showRecsTable(form) {
 // Функция получения гидов из базы и помещение их в селектор
 
 function loadGuides() {
-
-  let code = '<option selected value="0">Все</option>';
+  
+  let i = 0;
+  let code = '';
   let guidesList = document.getElementById("guides-list");
+  
 
   fetch("php/getGuides.php").then(response=>response.json())
     .then(result=>{
@@ -80,7 +89,9 @@ function loadGuides() {
       code += `
        <option value="${recs.id}">${recs.guide}</option>
       `
+      i++;
     });
+    code = `<option selected value="0">Все ${i}</option>` + code;
     guidesList.innerHTML = code;
   })
 } 
@@ -94,6 +105,7 @@ function showTodayRecsCard() {
   let free = '';
   let dayStr = '';
   let i = -1;
+  let fav = ' ';
   
   fetch("php/getTodayRecs.php").then(response=>response.json())
     .then(result=>{
@@ -101,6 +113,8 @@ function showTodayRecsCard() {
         
         if (recs.free == 1){free = '<span class="text-success">Бесплатная</span>'
         }else{free = '<span class="text-danger">Платная</span>'}
+
+        fav = getFavicon(recs.site);
 
         dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
         
@@ -112,7 +126,10 @@ function showTodayRecsCard() {
           <p>${recs.guide}</p>
           <p>${free}</p>
           <p class="mb-1">Перейти к экскурсии на</p>
-          <a href="${recs.link}" class="mb-2">${recs.site}</a>
+          <div class = "div-favicon mb-3">
+            <img src="${fav}" class="favicon">
+            <a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a>
+          </div>
           </div>
       ` 
       i = index;
@@ -131,6 +148,7 @@ function showRecsCard(form) {
   let free = '';
   let dayStr = '';
   let i = -1;
+  let fav = ' ';
   
   const formData = new FormData(form);
   
@@ -144,6 +162,8 @@ function showRecsCard(form) {
         if (recs.free == 1){free = '<span class="text-success">Бесплатная</span>'
         }else{free = '<span class="text-danger">Платная</span>'}
 
+        fav = getFavicon(recs.site);
+
         dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
         
         code += `
@@ -154,7 +174,10 @@ function showRecsCard(form) {
           <p>${recs.guide}</p>
           <p>${free}</p>
           <p class="mb-1">Перейти к экскурсии на</p>
-          <a href="${recs.link}" class="mb-2">${recs.site}</a>
+          <div class = "div-favicon mb-3">
+            <img src="${fav}" class="favicon">
+            <a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a>
+          </div>
           </div>
       ` 
       i = index;
@@ -163,4 +186,17 @@ function showRecsCard(form) {
       cards.innerHTML = code;
     }) 
 }   
+
+function getFavicon(site) {
+  let fav = ' ';
+  if(site == 'Mosstreets.ru'){
+    fav = 'img/mosstreets.png'
+  }else if(site == 'Moscowwalking.ru'){
+    fav = 'img/moscowwalking.png'
+  }else if(site == 'Moscoviti.ru'){
+    fav = 'img/moscoviti.png'
+  }else if(site == 'Tvoyamoskva.com'){
+    fav = 'img/tvoyamoskva.png'} 
+  return(fav);
+}
 

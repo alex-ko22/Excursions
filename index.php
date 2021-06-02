@@ -18,7 +18,7 @@
          <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
         </div>
       </div>
-      <form class="filter bg-light" onsubmit="showRecs(this); return false;">
+      <form class="filter bg-light" id="forma" onsubmit="showRecs(this); return false;">
           <div class="row row-cols-sm-4">
             <div class="filter-site" >
                 <p class="mb-1">Сайты для загрузки</p>
@@ -73,20 +73,20 @@
             <div class="mt-1 text-end">Показывать в виде:</div>
             <div> 
               <div class="form-check mt-0">
-                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" checked>
+                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" onclick="showRecs(forma)" checked>
                 <label class="form-check-label" for="flexRadioDefault2">
                   Карточек
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable">
+                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable" onclick="showRecs(forma)">
                 <label class="form-check-label" for="flexRadioDefault1">
                   Таблицы
                 </label>
               </div>  
             </div>
             <div>
-              <button type="submit" class="btn btn-primary mt-1">Показать</button>
+              <button type="submit" id="btn" class="btn btn-primary mt-1">Показать</button>
             </div>     
             <div>
               <p id="inform" class="mt-1 text-end"></p>
