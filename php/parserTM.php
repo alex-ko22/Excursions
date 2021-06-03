@@ -8,7 +8,7 @@
 
     $html = file_get_html('https://tvoyamoskva.com/');
     $i=0;
-    $site = 'Tvoyamoskva.com';
+    $site = 'Tvoyamoskva';
     $startTime = time();
     $guidesArr = Parse::formGuidesArr();
 

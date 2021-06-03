@@ -8,7 +8,7 @@
 
     $html = file_get_html('https://moscoviti.ru/raspisanie/');
     $i=0;
-    $site = 'Moscoviti.ru';
+    $site = 'Moscoviti';
     $startTime = time();
     $guidesArr = Parse::formGuidesArr();
 
@@ -16,7 +16,7 @@
         
         $link = $div->find('a',0)->href;
         if(mb_substr($link,0,3) != 'htt') {
-            $link = 'https://moscoviti.ru/product/'.$link;
+            $link = 'http://moscoviti.ru/product/'.$link;
         }
 
         $title = $div->find('a',0)->plaintext;

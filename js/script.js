@@ -96,49 +96,6 @@ function loadGuides() {
   })
 } 
 
-// Функция запроса и отображения записей в виде карточек за текущую дату
-
-function showTodayRecsCard() {
-
-  let code = '';
-  let cards = document.getElementById("cards");
-  let free = '';
-  let dayStr = '';
-  let i = -1;
-  let fav = ' ';
-  
-  fetch("php/getTodayRecs.php").then(response=>response.json())
-    .then(result=>{
-      result.forEach((recs, index)=>{
-        
-        if (recs.free == 1){free = '<span class="text-success">Бесплатная</span>'
-        }else{free = '<span class="text-danger">Платная</span>'}
-
-        fav = getFavicon(recs.site);
-
-        dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
-        
-        code += `
-        <div class="card text-center border border-1">
-          <img src="${recs.img_url}" class="picture my-2 class="img-fluid">
-          <h5 class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</h5>
-          <p>${dayStr}</p>
-          <p>${recs.guide}</p>
-          <p>${free}</p>
-          <p class="mb-1">Перейти к экскурсии на</p>
-          <div class = "div-favicon mb-3">
-            <img src="${fav}" class="favicon">
-            <a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a>
-          </div>
-          </div>
-      ` 
-      i = index;
-      });
-      inform.innerText = 'Найдено экскурсий: ' + String(i+1); 
-      cards.innerHTML = code;
-    }) 
-}   
-
 // Функция запроса и отображения записей в виде карточек  по фильтру
 
 function showRecsCard(form) {
@@ -189,13 +146,13 @@ function showRecsCard(form) {
 
 function getFavicon(site) {
   let fav = ' ';
-  if(site == 'Mosstreets.ru'){
+  if(site == 'Mosstreets'){
     fav = 'img/mosstreets.png'
-  }else if(site == 'Moscowwalking.ru'){
+  }else if(site == 'Moscowwalking'){
     fav = 'img/moscowwalking.png'
-  }else if(site == 'Moscoviti.ru'){
+  }else if(site == 'Moscoviti'){
     fav = 'img/moscoviti.png'
-  }else if(site == 'Tvoyamoskva.com'){
+  }else if(site == 'Tvoyamoskva'){
     fav = 'img/tvoyamoskva.png'} 
   return(fav);
 }

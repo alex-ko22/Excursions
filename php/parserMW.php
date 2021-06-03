@@ -18,7 +18,7 @@
             break;
         }
 
-        $site = 'Moscowwalking.ru';
+        $site = 'Moscowwalking';
 
         foreach($div->find('strong') as $divmini){
             $link = 'http://moscowwalking.ru'.$divmini->find('a',0)->href;

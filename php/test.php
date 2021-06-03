@@ -1,7 +1,6 @@
 <?php
-
-$str = '123\r456\r678';
+header("Content-Type: text/plain; charset=utf-8");
+$str = "123 \n 456 \n 678";
 echo($str);
-echo(str_replace('\r',' ', $str));
 
 ?>

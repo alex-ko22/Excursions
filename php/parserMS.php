@@ -9,7 +9,7 @@
     
     $html = file_get_html('https://mosstreets.ru/schedule/');
     $i=0;
-    $site = 'Mosstreets.ru';
+    $site = 'Mosstreets';
 
     $startTime = time();
     $guidesArr = Parse::formGuidesArr();
