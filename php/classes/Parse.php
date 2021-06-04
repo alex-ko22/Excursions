@@ -131,7 +131,9 @@ class Parse{
             $day = trim(substr($dateStr,0,2));
             $date = Parse::formDateMonth($dateStr,$day);
     
-            if( strtotime($date) >= (date('U') + ($days*24*60*60)) ) {
+            if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
+                break;
+            }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
                 break;
             }
     
@@ -192,8 +194,10 @@ class Parse{
             $dateStr = $htmlInner->find('tbody p',0)->innertext;
             $day = trim(mb_substr((explode(',',$dateStr)[1]),0,3));
             $date = Parse::formDateMonth($dateStr,$day);
-            $time = mb_substr($dateStr,-5).':00';
-            if( strtotime($date) >= (date('U') + ($days*24*60*60)) ) {
+            $time = explode('в ',$dateStr)[1].':00';
+            if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
+                break;
+            }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
                 break;
             }
 
@@ -215,25 +219,72 @@ class Parse{
             VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");   
             $i++;  
         } 
-        echo(" \nReceived records from Moscoviti.ru: ".$i);
+        echo("\n\rReceived records from Moscoviti.ru: ".$i);
         echo(" \nExecution time: ".(time() - $startTime)." secs");
     }
 
+    public static function parseMH($period) {
+
+        global $mysqli;
+        global $days;
+        global $descrMax;
+        
+        $guideId = 0;
+        
+        $html = file_get_html('https://www.moskvahod.ru/month/%D0%A0%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B3%D1%83%D0%BB%D0%BE%D0%BA-%D0%BF%D0%BE-%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5/%D0%BF%D0%B5%D1%88%D0%B5%D1%85%D0%BE%D0%B4%D0%BD%D1%8B%D0%B5-%D1%8D%D0%BA%D1%81%D0%BA%D1%83%D1%80%D1%81%D0%B8%D0%B8/');
+        $i=0;
+        $site = 'Moskvahod';
+        $free = false;
+    
+        $startTime = time();
+        $guidesArr = Parse::formGuidesArr();
+    
+        foreach($html->find('div[data-info]') as $div){
+           $dataArr = explode(' ',$div->getAttribute('data-info'));
+           $guide = $dataArr[1].' '.$dataArr[0];
+           $guideId = Parse::getGuideId($guide, $guidesArr);
+           $day = $dataArr[2];
+           $date = Parse::formDateMonth(' '.$dataArr[3],$day);
+           $time = $dataArr[5].':00';
+        
+           if( strtotime($date) >= (date('U') + ($days*24*60*60)) ) {
+            break;
+           }
+    
+           $img_url = $div->getAttribute('data-img');
+           $link = $div->getAttribute('data-link');
+           $title = $div->getAttribute('data-title');
+    
+           $htmlInner = file_get_html( $link );
+           $descr = ($htmlInner->find('div.catalog-body__about p',0)->plaintext).'...';
+           if(mb_strlen($descr)>$descrMax){
+             $descr = Parse::reduceDescr($descr);
+           }  
+    
+            $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+            VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");   
+            $i++;      
+        } 
+        echo(' Received records from Moskvahod: '.$i);
+        echo(' Execution time: '.(time() - $startTime).' secs');
+    }
 
     public static function formDateMonth($dateStr,$day) {
-
-        if (strpos($dateStr,'января')) {$date = '2021-01-'.$day;
-            }elseif(strpos($dateStr,'февраля')) {$date = '2021-02-'.$day;
-            }elseif(strpos($dateStr,'марта')) {$date = '2021-03-'.$day;
-            }elseif(strpos($dateStr,'апреля')) {$date = '2021-04-'.$day;
-            }elseif(strpos($dateStr,'мая')) {$date = '2021-05-'.$day;
-            }elseif(strpos($dateStr,'июня')) {$date = '2021-06-'.$day;
-            }elseif(strpos($dateStr,'июля')) {$date = '2021-07-'.$day;
-            }elseif(strpos($dateStr,'августа')) {$date = '2021-08-'.$day;        
-            }elseif(strpos($dateStr,'сентября')) {$date = '2021-09-'.$day;
-            }elseif(strpos($dateStr,'октября')) {$date = '2021-10-'.$day;
-            }elseif(strpos($dateStr,'ноября')) {$date = '2021-11-'.$day;
-            }elseif(strpos($dateStr,'декабря')) {$date = '2021-12-'.$day;
+        if (strlen($day) == 1){
+            $day = '0'.$day;
+        }
+        if (strpos($dateStr,'января') != false) {$date = '2021-01-'.$day;
+            }elseif(strpos($dateStr,'феврал') != false) {$date = '2021-02-'.$day;
+            }elseif(strpos($dateStr,'март') != false) {$date = '2021-03-'.$day;
+            }elseif(strpos($dateStr,'апрел') != false) {$date = '2021-04-'.$day;
+            }elseif(strpos($dateStr,'мая') != false || strpos($dateStr,'май') != false) {$date = '2021-05-'.$day;
+            }elseif(strpos($dateStr,'июн') != false) {$date = '2021-06-'.$day;
+            }elseif(strpos($dateStr,'июл') != false) {$date = '2021-07-'.$day;
+            }elseif(strpos($dateStr,'август') != false) {$date = '2021-08-'.$day;        
+            }elseif(strpos($dateStr,'сентябр') != false) {$date = '2021-09-'.$day;
+            }elseif(strpos($dateStr,'октябр') != false) {$date = '2021-10-'.$day;
+            }elseif(strpos($dateStr,'ноябр') != false) {$date = '2021-11-'.$day;
+            }elseif(strpos($dateStr,'декабр') != false) {$date = '2021-12-'.$day;
             }else {$date = '2021-01-01';}
             
         return($date);
@@ -287,5 +338,8 @@ class Parse{
         array_pop($arr);
         return(implode(' ', $arr).'...');
     }
-}
+
+}   // End of class
+
+
 ?>

@@ -27,7 +27,7 @@
         $dateStr = $htmlInner->find('tbody p',0)->innertext;
         $day = trim(mb_substr((explode(',',$dateStr)[1]),0,3));
         $date = Parse::formDateMonth($dateStr,$day);
-        $time = mb_substr($dateStr,-5).':00';
+        $time = explode('в ',$dateStr)[1].':00';
         if( strtotime($date) >= (date('U') + ($days*24*60*60)) ) {
             break;
         }

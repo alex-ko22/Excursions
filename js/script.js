@@ -3,9 +3,8 @@
 let btn = document.getElementById('btn');
 
 loadGuides();
-
+formDateSelector();
 setTimeout(()=>{btn.click();},1000);
-
 
 // Функция выбора вида показа - таблица или карточка
 
@@ -42,7 +41,7 @@ function showRecsTable(form) {
     let dayStr = '';
     let i = -1;
     let fav = ' ';
-
+    
     const formData = new FormData(form);
     
     fetch("php/getRecs.php", {
@@ -55,8 +54,10 @@ function showRecsTable(form) {
 
           fav = getFavicon(recs.site);
 
-          dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
+          let day = getDayOfWeek(recs.date);
 
+          dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
+          //<th scope="row" class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</th>
           code += `
           <tr class="t-row">
             <td>${index+1}</td>
@@ -66,9 +67,10 @@ function showRecsTable(form) {
             <td>${dayStr}</td>
             <td><img class = "favicon" src = "${fav}"><a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a></td>
           </tr>
-        ` 
+        `       
         i = index;
         });
+    
         inform.innerText = 'Найдено экскурсий: ' + String(i+1); 
         tbody.innerHTML = code;
       }) 
@@ -121,7 +123,9 @@ function showRecsCard(form) {
 
         fav = getFavicon(recs.site);
 
-        dayStr = recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
+        let day = getDayOfWeek(recs.date);
+
+        dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
         
         code += `
         <div class="card text-center border border-1">
@@ -153,7 +157,125 @@ function getFavicon(site) {
   }else if(site == 'Moscoviti'){
     fav = 'img/moscoviti.png'
   }else if(site == 'Tvoyamoskva'){
-    fav = 'img/tvoyamoskva.png'} 
+    fav = 'img/tvoyamoskva.png' 
+  }else if(site == 'Moskvahod'){
+    fav = 'img/moskvahod.png'} 
   return(fav);
+  }
+
+function getDayOfWeek(date) {
+  let dateArr = date.split('-'); 
+  let objDate = new Date(dateArr[0],dateArr[1]-1,dateArr[2]);
+
+  switch(objDate.getDay()){
+    case 0:
+      return('Вс ');
+    case 1:
+      return('Пн ');
+    case 2:
+      return('Вт ');
+    case 3:
+      return('Ср ');
+    case 4:
+      return('Чт ');  
+    case 5:
+      return('Пт ');
+    case 6:
+      return('Сб '); 
+    }
 }
 
+function formDateSelector(){
+  
+  let code = `
+  <option value="TT 01 01" selected>Сегодня</option>
+  `;
+  let now = new Date();
+  let daysList = document.getElementById("days-list");
+  let i = 0;
+  let dayStr = '';
+
+  for(i = 1; i <= 9; i++){
+
+    now.setDate(now.getDate() + 1);
+
+    dayStr = getDateStr(now);
+    
+    if((dayStr.substr(0,2) == 'Сб') || (dayStr.substr(0,2) == 'Вс')){
+      code += `
+       <option class="weekend" value="${dayStr}">${dayStr}</option>
+      `  
+    }else{
+    code += `
+       <option value="${dayStr}">${dayStr}</option>
+      `
+    }
+  }
+  code += `
+  <option value="AA ${i} 01">${'На ' + i + ' дней'}</option>
+   `   
+  daysList.innerHTML = code;
+}
+
+function getDateStr(day) {
+  
+  let month = day.getMonth() + 1;
+  let dayOfWeek = day.getDay();
+  let dayOfMonth = day.getDate();
+
+  switch(month){
+      case 1:
+          month = ' января';
+          break;
+      case 2:
+        month = ' февраля';
+        break;
+      case 3:
+        month = ' марта';
+        break;
+      case 4:
+        month = ' апреля';
+        break;
+      case 5:
+        month = ' мая';
+        break;
+      case 6:
+        month = ' июня';
+        break;
+      case 7:
+        month = ' июля';
+        break;
+      case 8:
+        month = ' августа';
+        break;
+      case 9:
+        month = ' сентября';
+        break;
+      case 10:
+        month = ' октября';
+        break;
+      case 11:
+        month = ' ноября';
+        break;
+      case 12:
+        month = ' декабря';
+        break;
+  }
+  
+  switch(dayOfWeek){
+      case 1:
+          return('Пн  ' + dayOfMonth + month);
+      case 2:
+          return('Вт  ' + dayOfMonth + month);
+      case 3:
+          return('Ср  ' + dayOfMonth + month);
+      case 4:
+          return('Чт  ' + dayOfMonth + month);
+      case 5:
+          return('Пт  ' + dayOfMonth + month);
+      case 6:
+          return('Сб  ' + dayOfMonth + month);
+      case 0:
+          return('Вс  ' + dayOfMonth + month);                    
+  }
+}

@@ -13,28 +13,13 @@
   <body>
     <div class="container">
       <div class="row header my-3 position-relative">
-        <img src="img/DSC01860.jpg" class="img-fluid" alt="">
+        <img src="img/DSC01860.jpg" id="main-image" class="img-fluid px-0" alt="">
         <div class="position-absolute top-50 start-0 text-center">
          <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
         </div>
       </div>
       <form class="filter bg-light" id="forma" onsubmit="showRecs(this); return false;">
           <div class="row row-cols-sm-4">
-            <div class="filter-site" >
-                <p class="mb-1">Сайты для загрузки</p>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="1" name="site1" id="mosstreets" checked>
-                    <label class="form-check-label" for="mosstreets">
-                      Mosstreets.ru
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="2" name="site2" id="moscowwalking" checked>
-                    <label class="form-check-label" for="moscowwalking">
-                      Moscowwalking.ru
-                    </label>
-                </div>
-            </div>
             <div class="filter-free" >
               <p class="mb-1">Тип</p>
               <div class="form-check">
@@ -49,23 +34,25 @@
                     Платная
                   </label>
               </div>
-          </div>
-            <div class="filter-date col">
-              <p class="mb-1">Период</p>
-              <select class="form-select" name="date" aria-label="Default select example">
-                <option selected value="0">На сегодня</option>
-                <option value="1">На 2 дня</option>
-                <option value="2">На 3 дня</option>
-                <option value="3">На 4 дня</option>
-                <option value="4">На 5 дней</option>
-                <option value="5">На 6 дней</option>
-                <option value="6">На неделю</option> 
+            </div>
+            <div class="filter-site" >
+              <p class="mb-1">Сайты для загрузки</p>
+              <select class="form-select" name="site" aria-label="Default select example">
+                <option selected value="0">Все 5</option>
+                <option value="1">Mosstreets</option>
+                <option value="2">Moscowwalking</option>
+                <option value="3">Tvoyamoskva</option>
+                <option value="4">Moscoviti</option>
+                <option value="5">Moskvahod</option>
               </select>
+            </div>
+            <div class="filter-date col">
+              <p class="mb-1">Дата</p>
+              <select class="form-select" aria-label="Default select example" name="date" id="days-list"></select>
             </div>
             <div class="filter-guide">
               <p class="mb-1">Экскурсовод</p>
-              <select class="form-select" aria-label="Default select example" name="guide" id="guides-list">  
-              </select>
+              <select class="form-select" aria-label="Default select example" name="guide" id="guides-list"></select>
             </div>
           </div>
           <div class="row my-3 row-submit row-cols-2 row-cols-md-4">

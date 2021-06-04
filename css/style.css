@@ -42,6 +42,16 @@
     width: 16px;
     display: inline;
 }
+#main-image {
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+.weekend {
+    color:crimson;
+}
+#ms {
+    background-image: url('../img/mosstreets.png');
+}
 
-/*  */
+
+
 
