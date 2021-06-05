@@ -38,12 +38,12 @@
             <div class="filter-site" >
               <p class="mb-1">Сайты для загрузки</p>
               <select class="form-select" name="site" aria-label="Default select example">
-                <option selected value="0">Все 5</option>
-                <option value="1">Mosstreets</option>
-                <option value="2">Moscowwalking</option>
-                <option value="3">Tvoyamoskva</option>
-                <option value="4">Moscoviti</option>
-                <option value="5">Moskvahod</option>
+                <option selected value=" ">Все 5</option>
+                <option id="ms" value="Mosstreets">Mosstreets</option>
+                <option value="Moscowwalking">Moscowwalking</option>
+                <option value="Tvoyamoskva">Tvoyamoskva</option>
+                <option value="Moscoviti">Moscoviti</option>
+                <option value="Moskvahod">Moskvahod</option>
               </select>
             </div>
             <div class="filter-date col">

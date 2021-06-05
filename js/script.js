@@ -188,7 +188,7 @@ function getDayOfWeek(date) {
 function formDateSelector(){
   
   let code = `
-  <option value="TT 01 01" selected>Сегодня</option>
+  <option value="0" selected>Сегодня</option>
   `;
   let now = new Date();
   let daysList = document.getElementById("days-list");
@@ -203,16 +203,16 @@ function formDateSelector(){
     
     if((dayStr.substr(0,2) == 'Сб') || (dayStr.substr(0,2) == 'Вс')){
       code += `
-       <option class="weekend" value="${dayStr}">${dayStr}</option>
+       <option class="weekend" value="${i}">${dayStr}</option>
       `  
     }else{
     code += `
-       <option value="${dayStr}">${dayStr}</option>
+       <option value="${i}">${dayStr}</option>
       `
     }
   }
   code += `
-  <option value="AA ${i} 01">${'На ' + i + ' дней'}</option>
+  <option value="100">${'На ' + i + ' дней'}</option>
    `   
   daysList.innerHTML = code;
 }

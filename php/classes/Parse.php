@@ -247,10 +247,12 @@ class Parse{
            $date = Parse::formDateMonth(' '.$dataArr[3],$day);
            $time = $dataArr[5].':00';
         
-           if( strtotime($date) >= (date('U') + ($days*24*60*60)) ) {
-            break;
+           if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
+              break;
+           }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
+                break;
            }
-    
+        
            $img_url = $div->getAttribute('data-img');
            $link = $div->getAttribute('data-link');
            $title = $div->getAttribute('data-title');

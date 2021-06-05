@@ -5,7 +5,7 @@
     require_once('classes/Parse.php');
     require_once('db.php');
 
-    switch($_POST['site']){
+    /* switch($_POST['site']){
         case 0:
             $site = '';
             break;
@@ -24,8 +24,11 @@
         case 5:
             $site = ' AND `site` = "Moskvahod"';
             break;
-
-    }
+    } */
+    //$site = $_POST['site'];
+    if(($site = $_POST['site']) != ' '){
+        $site = ' AND `site` = "'.$site.'"';
+     }
 
     if(array_key_exists('free1',$_POST) && !(array_key_exists('free2',$_POST))){
         $free = ' AND `free` = "1"';
@@ -37,20 +40,14 @@
         $free = '';
     }
    
-    $date = $_POST['date'];    // Приходит в виде Вс 11 ноября
+    $date = $_POST['date'];   
     
-    $dateArr = explode(' ',$date);
-    if ($dateArr[0] == 'TT'){
-        $dateStr = ' = CURRENT_DATE()';
-    }elseif ($dateArr[0] == 'AA'){
-        $dateStr = ' < "2030-01-01"';
+    if ($date == '100'){
+        $dateStr = '`date` BETWEEN CURRENT_DATE AND (DATE_ADD(CURRENT_DATE, INTERVAL '.$date.' DAY))';     
     }else{
-        $dateStr = Parse::formDateMonth($date,$dateArr[1]);
-        $dateStr = ' = "'.$dateStr.'"';
-        //$dateStr = ' = "2021-06-5"';
+        $dateStr = '`date` = DATE_ADD(CURRENT_DATE(), INTERVAL '.$date.' DAY)';
     }
-    
-
+     
     $guide = $_POST['guide'];
    
     if($guide == '0'){
@@ -60,10 +57,7 @@
     } 
 
     // Формируем запрос 
-
-    // $where = '`date` BETWEEN CURRENT_DATE AND (DATE_ADD(CURRENT_DATE, INTERVAL '.$date.' DAY))'.$guideStr.$site.$free.' ORDER BY `date`, `time`';
-    $where = '`date`'.$dateStr.$guideStr.$site.$free.' ORDER BY `date`, `time`';
-
+    $where = $dateStr.$guideStr.$site.$free.' ORDER BY `date`, `time`';
 
     $result = mysqli_query($mysqli,"SELECT *
      FROM `excursion` LEFT JOIN `guides` ON `excursion`.`guide_id` = `guides`.`id`
