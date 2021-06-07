@@ -2,30 +2,8 @@
     // Функция формирования запроса к базе
     
     header('Content-type: text/html; charset=utf-8');
-    require_once('classes/Parse.php');
     require_once('db.php');
 
-    /* switch($_POST['site']){
-        case 0:
-            $site = '';
-            break;
-        case 1:
-            $site = ' AND `site` = "Mosstreets"';
-            break;
-        case 2:
-            $site = ' AND `site` = "Moscowwalking"';
-            break;
-        case 3:
-            $site = ' AND `site` = "Tvoyamoskva"';
-            break;
-        case 4:
-            $site = ' AND `site` = "Moscoviti"';
-            break;
-        case 5:
-            $site = ' AND `site` = "Moskvahod"';
-            break;
-    } */
-    //$site = $_POST['site'];
     if(($site = $_POST['site']) != ' '){
         $site = ' AND `site` = "'.$site.'"';
      }
@@ -39,25 +17,19 @@
     }else{
         $free = '';
     }
-   
-    $date = $_POST['date'];   
     
-    if ($date == '100'){
-        $dateStr = '`date` BETWEEN CURRENT_DATE AND (DATE_ADD(CURRENT_DATE, INTERVAL '.$date.' DAY))';     
+    if (($date = $_POST['date']) == '100'){
+        $date = '`date` BETWEEN CURRENT_DATE AND (DATE_ADD(CURRENT_DATE, INTERVAL '.$date.' DAY))';     
     }else{
-        $dateStr = '`date` = DATE_ADD(CURRENT_DATE(), INTERVAL '.$date.' DAY)';
+        $date = '`date` = DATE_ADD(CURRENT_DATE(), INTERVAL '.$date.' DAY)';
     }
-     
-    $guide = $_POST['guide'];
    
-    if($guide == '0'){
-        $guideStr = '';
-    }else{
-        $guideStr = ' AND `guide_id` = '.$guide;
+    if(($guide = $_POST['guide']) != ' '){
+        $guide = ' AND `guide_id` = '.$guide;
     } 
 
     // Формируем запрос 
-    $where = $dateStr.$guideStr.$site.$free.' ORDER BY `date`, `time`';
+    $where = $date.$guide.$site.$free.' ORDER BY `date`, `time`';
 
     $result = mysqli_query($mysqli,"SELECT *
      FROM `excursion` LEFT JOIN `guides` ON `excursion`.`guide_id` = `guides`.`id`

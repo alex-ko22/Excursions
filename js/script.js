@@ -93,7 +93,7 @@ function loadGuides() {
       `
       i++;
     });
-    code = `<option selected value="0">Все ${i}</option>` + code;
+    code = `<option selected value=" ">Все ${i}</option>` + code;
     guidesList.innerHTML = code;
   })
 } 

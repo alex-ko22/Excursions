@@ -1,10 +1,11 @@
 <?php
 class Parse{
-    public static function parseMW($period) {  //$period = "All" or "Day"
+    public static function parseMW() {  //$period = "All" or "Day"
 
         global $mysqli;
         global $days;
         global $descrMax;
+        global $period;
            
         $html = file_get_html('http://moscowwalking.ru/#schedule');
         $i=0;
@@ -15,22 +16,26 @@ class Parse{
             $dateStr = $div->find('div.t145__title.t-title',0)->plaintext;
             $day = substr($dateStr,0,2);
             $date = Parse::formDateMonth($dateStr,$day);
-
-            if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
-                break;
-            }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
-                break;
+            
+            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
+                continue; 
+            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+                continue;
             }
-    
+            
             $site = 'Moscowwalking';
     
             foreach($div->find('strong') as $divmini){
                 $link = 'http://moscowwalking.ru'.$divmini->find('a',0)->href;
                 $htmlInner = str_get_html(file_get_html( $link ));
+                if(!get_headers($link, 1)){
+                    continue;
+                 }
                 $urlInner = $htmlInner->find('div[data-img-zoom-url]',0);
                 $url = explode("'",$urlInner);
                 $img_url = 'http://moscowwalking.ru'.$url[1];
                 $descr = $htmlInner->find('div.t232__text.t-text.t-text_sm',0)->plaintext;
+                $descr = str_replace($descr,'<br>','');
                 if(mb_strlen($descr)>$descrMax){
                     $descr = Parse::reduceDescr($descr);
                 }
@@ -80,10 +85,10 @@ class Parse{
             $date = '2021-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
             $time = substr($dateStr,16,5).':00';
 
-            if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
-                break;
-            }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
-                break;
+            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
+                continue; 
+            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+                continue;
             }
 
                
@@ -96,6 +101,9 @@ class Parse{
             } else {$free = false;} 
     
             $link = $div->find('p.trio_header a',0)->href;
+            if(!get_headers($link, 1)){
+                continue;
+            }
             $htmlInner = file_get_html( $link );
             $descr = $htmlInner->find('div.entry p', 1)->plaintext; 
     
@@ -131,10 +139,10 @@ class Parse{
             $day = trim(substr($dateStr,0,2));
             $date = Parse::formDateMonth($dateStr,$day);
     
-            if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
-                break;
-            }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
-                break;
+            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
+                continue; 
+            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+                continue;
             }
     
             $strTime = $div->find('p.schedule-excursion__time',0)->plaintext;
@@ -142,6 +150,9 @@ class Parse{
     
             $title = $div->find('a.schedule-excursion__name',0)->plaintext;
             $link = $div->find('a.schedule-excursion__name',0)->href;
+            if(!get_headers($link, 1)){
+                continue;
+            }
             $guide = $div->find('p.schedule-excursion__guide',0)->plaintext;
             $guideStr = explode(' ',$guide);
             $guide = $guideStr[1].' '.$guideStr[0];
@@ -185,6 +196,9 @@ class Parse{
             if(mb_substr($link,0,3) != 'htt') {
                 $link = 'https://moscoviti.ru/product/'.$link;
             }
+            if(!get_headers($link, 1)){
+                continue;
+            }
 
             $title = $div->find('a',0)->plaintext;
             $htmlInner = file_get_html( $link );
@@ -195,10 +209,10 @@ class Parse{
             $day = trim(mb_substr((explode(',',$dateStr)[1]),0,3));
             $date = Parse::formDateMonth($dateStr,$day);
             $time = explode('в ',$dateStr)[1].':00';
-            if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
-                break;
-            }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
-                break;
+            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
+                continue; 
+            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+                continue;
             }
 
             if(($htmlInner->find('tbody p',3)->innertext) == 'бесплатная'){
@@ -247,14 +261,17 @@ class Parse{
            $date = Parse::formDateMonth(' '.$dataArr[3],$day);
            $time = $dataArr[5].':00';
         
-           if(($period == 'Day') && (strtotime($date) < (date('U') + ($days*24*60*60)))){
-              break;
-           }elseif( strtotime($date) > (date('U') + ($days*24*60*60)) ) {
-                break;
-           }
+           if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
+            continue; 
+            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+                continue;
+            }
         
            $img_url = $div->getAttribute('data-img');
            $link = $div->getAttribute('data-link');
+           if(!get_headers($link, 1)){
+            continue;
+            }
            $title = $div->getAttribute('data-title');
     
            $htmlInner = file_get_html( $link );

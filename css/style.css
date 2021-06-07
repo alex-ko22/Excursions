@@ -14,7 +14,7 @@
 .title:hover {
     color:cadetblue;
 }
-.footer, .header {
+.header {
     min-height: 50px; 
 }
 #inform {
@@ -29,8 +29,9 @@
 }
 .footer {
     width:100%;
-    max-height:10vh;  
-    
+    max-height:10vh; 
+    text-align: center;
+    min-height: 40px;
 }
 .t-heads th {
     color:darkgray;
@@ -48,10 +49,17 @@
 .weekend {
     color:crimson;
 }
-#ms {
-    color:darkblue;
+#email {
+    display: inline;
 }
-
+#copiright {
+    display: inline;
+    margin-right: 50px;
+    margin-bottom:10px;
+}
+.about {
+    color: midnightblue;
+}
 
 
 
