@@ -14,7 +14,8 @@
     <div class="container">
       <div class="row header my-3 position-relative">
         <img src="img/DSC01860.jpg" id="main-image" class="img-fluid px-0" alt="">
-        <a href="#" data-bs-toggle="modal" data-bs-target="#mod" class="about position-absolute top-0 start-0">О проекте</a>
+        <!-- <a href="#" data-bs-toggle="modal" data-bs-target="#mod" class="about position-absolute top-0 start-0">О проекте</a> -->
+        <a href="#" onclick="showModalWindow('О проекте','about'); return false" class="about position-absolute top-0 start-0">О проекте</a> 
         <div class="position-absolute top-50 start-0 text-center">
          <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
         </div>
@@ -86,31 +87,18 @@
         <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 gy-2 justify-content-center"></div> 
       </div> 
       <hr>
-         
-      <div class="modal" tabindex="-1" id="mod">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">О проекте</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" style="text-align:justify">
-              <p>Этот сайт возник как учебный проект для сдачи диплома на 2х месячных курсах по web-программированию. 
-                При выборе темы диплома мне показалось интересным собрать в одном месте все предложения по пешим 
-                экскурсиям по Москве с соответствующих сайтов. Сам я периодически посещаю подобные мероприятия, мне 
-                нравится прогуляться по Москве пару часов, да при этом ещё и узнать что-то новенькое - приятно и полезно. 
-                Но каждый раз приходилось заглядывать на разные ресурсы, чтобы найти подходящий вариант. Теперь стало 
-                попроще). Страничка получилась немудрёной, но задачи свои выполняет. Если у публики будет интерес к моей идее,
-                то проект можно будет развить, добавляя функционал и контент. Все ваши отзывы, пожелания, негодования отправляйте
-                на адрес электронной почты, указанный внизу основной страницы. 
-              </p>
-              <p style="text-align:right">Александр</p>
-            </div>
-           
-          </div>
-        </div>
+      
+      <!-- Подложка под модальным окном -->
+      <div id="overlay"></div>
+      <!-- Модальное окно -->
+      <div id="modal__" >
+        <img id="modal__cross" src="img/x-square.svg" alt="">  
+        <h5 id="modal__guide"></h5>
+        <img id="modal__img" src="" alt="">
+        <p id="modal__content"></p>
       </div>
-
+      
+    
     </div>
     <div class="footer">
         <p id="copiright">© 2021 Copyright: AEK</p>

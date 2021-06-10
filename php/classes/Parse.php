@@ -35,7 +35,7 @@ class Parse{
                 $url = explode("'",$urlInner);
                 $img_url = 'http://moscowwalking.ru'.$url[1];
                 $descr = $htmlInner->find('div.t232__text.t-text.t-text_sm',0)->plaintext;
-                $descr = str_replace($descr,'<br>','');
+                //$descr = str_replace($descr,'<br>','');
                 if(mb_strlen($descr)>$descrMax){
                     $descr = Parse::reduceDescr($descr);
                 }
@@ -63,12 +63,13 @@ class Parse{
 
     }
 
-    public static function parseMS($period) {  //$period = "All" or "Day"
+    public static function parseMS() {  //$period = "All" or "Day"
 
         global $mysqli;
         global $days;
         global $descrMax;
-        
+        global $period;
+
         $guideId = 0;
         
         $html = file_get_html('https://mosstreets.ru/schedule/');
@@ -122,11 +123,12 @@ class Parse{
         echo(" \nExecution time: ".(time() - $startTime)." secs");
     }
 
-    public static function parseTM($period){
+    public static function parseTM(){
         
         global $mysqli;
         global $days;
         global $descrMax;
+        global $period;
     
         $html = file_get_html('https://tvoyamoskva.com/');
         $i=0;
@@ -178,11 +180,12 @@ class Parse{
 
     }
 
-    public static function parseMV($period){
+    public static function parseMV(){
 
         global $mysqli;
         global $days;
         global $descrMax;
+        global $period;
 
         $html = file_get_html('https://moscoviti.ru/raspisanie/');
         $i=0;
@@ -237,11 +240,12 @@ class Parse{
         echo(" \nExecution time: ".(time() - $startTime)." secs");
     }
 
-    public static function parseMH($period) {
+    public static function parseMH() {
 
         global $mysqli;
         global $days;
         global $descrMax;
+        global $period;
         
         $guideId = 0;
         

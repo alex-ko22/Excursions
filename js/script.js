@@ -26,6 +26,7 @@ function showRecs(form) {
 // Функция запроса и отображения записей в виде таблицы  по фильтру
 
 function showRecsTable(form) {
+
     let code = `
       <tr class="t-heads">
         <th>#</th>
@@ -53,15 +54,14 @@ function showRecsTable(form) {
           }else{free = '$'}
 
           fav = getFavicon(recs.site);
-
+          
           let day = getDayOfWeek(recs.date);
-
           dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
-          //<th scope="row" class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</th>
+          // <th scope="row" class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</th>
           code += `
           <tr class="t-row">
             <td>${index+1}</td>
-            <th scope="row" class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</th>
+            <td class="title js-open-modal" onclick="showModalDescr(${recs.exc_id})">${recs.title}</td>
             <td>${free}</td>            
             <td>${recs.guide}</td>
             <td>${dayStr}</td>
@@ -130,7 +130,7 @@ function showRecsCard(form) {
         code += `
         <div class="card text-center border border-1">
           <img src="${recs.img_url}" class="picture my-2">
-          <h5 class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</h5>
+          <h5 class="title" onclick="showModalDescr(${recs.exc_id})">${recs.title}</h5>
           <p>${dayStr}</p>
           <p>${recs.guide}</p>
           <p>${free}</p>
@@ -278,4 +278,53 @@ function getDateStr(day) {
       case 0:
           return('Вс  ' + dayOfMonth + month);                    
   }
+}
+
+function showModalDescr(exc_id) {
+  const formData = new FormData();
+
+  formData.append('exc_id',exc_id);
+  fetch("php/getDescr.php", {
+    method: "POST",
+    body: formData
+    }).then(response=>response.json())
+      .then(result => {
+        showModalWindow(result.guide,result.descr);
+      });
+}
+
+function showModalWindow(title,descr) {
+    if (descr == 'about'){
+      descr = `Этот сайт возник как учебный проект для сдачи диплома на 2х месячных курсах по web-программированию. При
+      выборе темы диплома мне показалось интересным собрать в одном месте все предложения по пешим экскурсиям по Москве
+       с соответствующих сайтов. Сам я периодически посещаю подобные мероприятия, мне 
+      нравится прогуляться по Москве пару часов, да при этом ещё и узнать что-то новенькое - приятно и полезно. 
+      Но каждый раз приходилось заглядывать на разные ресурсы, чтобы найти подходящий вариант. Теперь стало 
+      попроще). Страничка получилась немудрёной, но задачи свои выполняет. Если у публики будет интерес к моей идее,
+      то проект можно будет развить, добавляя функционал и контент. Все ваши отзывы, пожелания, негодования отправляйте
+      на адрес электронной почты, указанный внизу основной страницы.`
+    }
+    else {
+      descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
+      title = title + ':'
+    }
+
+    document.body.style.overflowY = 'hidden';
+    modal__.style.overflowY = 'auto'; 
+    modal__.classList.add('active');
+    overlay.classList.add('active');
+    modal__content.innerHTML = descr;
+    modal__guide.innerText = title;
+    
+    modal__cross.addEventListener('click', ()=>{  
+      modal__.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflowY = 'auto';
+      });
+    overlay.addEventListener('click', ()=> {
+      modal__.classList.remove('active');
+      overlay.classList.remove('active');
+      document.body.style.overflowY = 'auto';
+        });  
+
 }
