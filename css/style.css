@@ -6,7 +6,7 @@
 .picture {
     max-height:120px;
     width:100%;
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: 0 0 5px rgba(0,0,0,0.5); 
 }
 .title {
     color:midnightblue;
@@ -127,7 +127,19 @@
    visibility: visible;
 }
 
-modal__content {
-    
+#modal__img {
+    max-width: 130px;
+    float:left;
+    margin-right:10px;
+    margin-top: 10px;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5); 
+}
+
+.guide {
+    cursor: pointer;
+    color:midnightblue;
+}
+.guide:hover {
+    color:cadetblue;
 }
 

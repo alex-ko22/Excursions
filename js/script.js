@@ -57,13 +57,12 @@ function showRecsTable(form) {
           
           let day = getDayOfWeek(recs.date);
           dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
-          // <th scope="row" class="title" data-bs-toggle="tooltip" data-bs-placement="bottom" title="${recs.descr}">${recs.title}</th>
           code += `
           <tr class="t-row">
             <td>${index+1}</td>
-            <td class="title js-open-modal" onclick="showModalDescr(${recs.exc_id})">${recs.title}</td>
+            <td class="title" onclick="showModalDescr(${recs.exc_id})">${recs.title}</td>
             <td>${free}</td>            
-            <td>${recs.guide}</td>
+            <td class="guide" onclick="showModalGuide(${recs.guide_id})">${recs.guide}</td>
             <td>${dayStr}</td>
             <td><img class = "favicon" src = "${fav}"><a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a></td>
           </tr>
@@ -132,7 +131,7 @@ function showRecsCard(form) {
           <img src="${recs.img_url}" class="picture my-2">
           <h5 class="title" onclick="showModalDescr(${recs.exc_id})">${recs.title}</h5>
           <p>${dayStr}</p>
-          <p>${recs.guide}</p>
+          <p class="guide" onclick="showModalGuide(${recs.guide_id})">${recs.guide}</p>
           <p>${free}</p>
           <p class="mb-1">Перейти к экскурсии на</p>
           <div class = "div-favicon mb-3">
@@ -159,9 +158,11 @@ function getFavicon(site) {
   }else if(site == 'Tvoyamoskva'){
     fav = 'img/tvoyamoskva.png' 
   }else if(site == 'Moskvahod'){
-    fav = 'img/moskvahod.png'} 
+    fav = 'img/moskvahod.png'
+  }else if(site == 'Moscowsteps'){
+    fav = 'img/moscowsteps.png'} 
   return(fav);
-  }
+}
 
 function getDayOfWeek(date) {
   let dateArr = date.split('-'); 
@@ -293,7 +294,20 @@ function showModalDescr(exc_id) {
       });
 }
 
-function showModalWindow(title,descr) {
+function showModalGuide(guide_id) {
+  const formData = new FormData();
+
+  formData.append('guide_id',guide_id);
+  fetch("php/getGuideInfo.php", {
+    method: "POST",
+    body: formData
+    }).then(response=>response.json())
+      .then(result => {
+        showModalWindow(result.guide,result.about,result.src_foto);
+      });
+}
+
+function showModalWindow(title,descr,img_src) {
     if (descr == 'about'){
       descr = `Этот сайт возник как учебный проект для сдачи диплома на 2х месячных курсах по web-программированию. При
       выборе темы диплома мне показалось интересным собрать в одном месте все предложения по пешим экскурсиям по Москве
@@ -304,7 +318,7 @@ function showModalWindow(title,descr) {
       то проект можно будет развить, добавляя функционал и контент. Все ваши отзывы, пожелания, негодования отправляйте
       на адрес электронной почты, указанный внизу основной страницы.`
     }
-    else {
+    else if (descr != 'about' && arguments.length == 2){
       descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
       title = title + ':'
     }
@@ -315,6 +329,7 @@ function showModalWindow(title,descr) {
     overlay.classList.add('active');
     modal__content.innerHTML = descr;
     modal__guide.innerText = title;
+    modal__img.src = img_src;
     
     modal__cross.addEventListener('click', ()=>{  
       modal__.classList.remove('active');

@@ -6,7 +6,8 @@
     $mysqli = new mysqli('localhost','root','','excursions');
     
     // Количество дней для загрузки в базу
-    $days = 15;
+    $days = 9;
     // Максимальное количество символов в описании
-    $descrMax = 799;
+    $descrMax = 1499;
+    $period = 'Day';
 ?>

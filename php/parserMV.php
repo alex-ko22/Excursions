@@ -3,8 +3,6 @@
     require_once('parser_start.php');
 
     global $mysqli;
-    global $days;
-    global $descrMax;
 
     $html = file_get_html('https://moscoviti.ru/raspisanie/');
     $i=0;

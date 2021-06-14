@@ -1,11 +1,9 @@
 <?php
 class Parse{
-    public static function parseMW() {  //$period = "All" or "Day"
+    public static function parseMW() { 
 
         global $mysqli;
-        global $days;
-        global $descrMax;
-        global $period;
+        global $fOpen;
            
         $html = file_get_html('http://moscowwalking.ru/#schedule');
         $i=0;
@@ -16,13 +14,13 @@ class Parse{
             $dateStr = $div->find('div.t145__title.t-title',0)->plaintext;
             $day = substr($dateStr,0,2);
             $date = Parse::formDateMonth($dateStr,$day);
-            
-            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
-                continue; 
-            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+            $option = Parse::checkDate($date); 
+            if ($option == 1){
                 continue;
+            }elseif($option == 2){
+                break;
             }
-            
+
             $site = 'Moscowwalking';
     
             foreach($div->find('strong') as $divmini){
@@ -36,9 +34,7 @@ class Parse{
                 $img_url = 'http://moscowwalking.ru'.$url[1];
                 $descr = $htmlInner->find('div.t232__text.t-text.t-text_sm',0)->plaintext;
                 //$descr = str_replace($descr,'<br>','');
-                if(mb_strlen($descr)>$descrMax){
-                    $descr = Parse::reduceDescr($descr);
-                }
+                $descr = Parse::reduceDescr($descr);             
     
                 $time = substr($divmini,18,5).':00';
                 $title = $divmini->find('a',0)->plaintext;
@@ -58,18 +54,15 @@ class Parse{
                 $i++;
             }
         }
-        echo(" \nReceived records from Moscowwalking.ru: ".$i);
-        echo(" \nExecution time: ".(time() - $startTime)." secs");    
-
+        fwrite($fOpen,'Received records from Moscowwalking.ru: '.$i);
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");    
     }
 
     public static function parseMS() {  //$period = "All" or "Day"
 
         global $mysqli;
-        global $days;
-        global $descrMax;
-        global $period;
-
+        global $fOpen;
+      
         $guideId = 0;
         
         $html = file_get_html('https://mosstreets.ru/schedule/');
@@ -86,12 +79,12 @@ class Parse{
             $date = '2021-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
             $time = substr($dateStr,16,5).':00';
 
-            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
-                continue; 
-            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+            $option = Parse::checkDate($date); 
+            if ($option == 1){
                 continue;
+            }elseif($option == 2){
+                break;
             }
-
                
             $url = explode('image:',$divmini = $div->find('div.mini',0)->getAttribute('style'));
             $img_url = mb_substr(mb_substr($url[1],5),0,-2);
@@ -107,10 +100,7 @@ class Parse{
             }
             $htmlInner = file_get_html( $link );
             $descr = $htmlInner->find('div.entry p', 1)->plaintext; 
-    
-            if(mb_strlen($descr)>$descrMax){
-                $descr = Parse::reduceDescr($descr);
-            }  
+            $descr = Parse::reduceDescr($descr);
     
             $guide = $div->find('span.guide',0)->plaintext;
             $guideId = Parse::getGuideId($guide, $guidesArr);
@@ -119,16 +109,14 @@ class Parse{
             VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");   
             $i++;     
         } 
-        echo(" \nReceived records from Mosstreets.ru: ".$i);
-        echo(" \nExecution time: ".(time() - $startTime)." secs");
+        fwrite($fOpen,'Received records from Mosstreets.ru: '.$i);
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");  
     }
 
     public static function parseTM(){
         
         global $mysqli;
-        global $days;
-        global $descrMax;
-        global $period;
+        global $fOpen;
     
         $html = file_get_html('https://tvoyamoskva.com/');
         $i=0;
@@ -140,11 +128,11 @@ class Parse{
             $dateStr=$div->find('p.schedule-excursion__date',0)->plaintext;
             $day = trim(substr($dateStr,0,2));
             $date = Parse::formDateMonth($dateStr,$day);
-    
-            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
-                continue; 
-            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+            $option = Parse::checkDate($date); 
+            if ($option == 1){
                 continue;
+            }elseif($option == 2){
+                break;
             }
     
             $strTime = $div->find('p.schedule-excursion__time',0)->plaintext;
@@ -164,10 +152,7 @@ class Parse{
             $img_url = $htmlInner->find('img',0)->getAttribute('src');
             $descr1 = $htmlInner->find('div.about-excursion__description p',3)->plaintext;
             $descr2 = $htmlInner->find('div.about-excursion__description p',4)->plaintext;
-            $descr = $descr1.$descr2;
-            if(mb_strlen($descr)>$descrMax){
-                $descr = Parse::reduceDescr($descr);
-            }
+            $descr = Parse::reduceDescr($descr1.$descr2);
     
             $free = true;
     
@@ -175,23 +160,22 @@ class Parse{
             VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");   
             $i++;     
         } 
-        echo(" \nReceived records from Tvoyamoskva.com: ".$i);
-        echo(" \nExecution time: ".(time() - $startTime)." secs");
-
+        fwrite($fOpen,'Received records from Tvoyamoskva.com: '.$i);
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n"); 
     }
 
     public static function parseMV(){
 
         global $mysqli;
+        global $fOpen;
         global $days;
-        global $descrMax;
-        global $period;
-
+ 
         $html = file_get_html('https://moscoviti.ru/raspisanie/');
-        $i=0;
+        $i = 0;
         $site = 'Moscoviti';
         $startTime = time();
         $guidesArr = Parse::formGuidesArr();
+        $previousDay = '';
 
         foreach($html->find('span.tg-block') as $div){
             
@@ -199,24 +183,28 @@ class Parse{
             if(mb_substr($link,0,3) != 'htt') {
                 $link = 'https://moscoviti.ru/product/'.$link;
             }
-            if(!get_headers($link, 1)){
+            /* if(!get_headers($link, 1)){
+                continue;
+            } */
+
+            $htmlInner = file_get_html( $link );
+            $dateStr = $htmlInner->find('tbody p',0)->innertext;
+            $day = (explode(' ',$dateStr)[1]);
+            if(!ctype_digit($day)){
                 continue;
             }
-
-            $title = $div->find('a',0)->plaintext;
-            $htmlInner = file_get_html( $link );
-            $url = explode('url(',($htmlInner->find('div.elementor-cta__bg.elementor-bg',0)->getAttribute('style')));
-            $img_url = mb_substr($url[1],0,-2);
-
-            $dateStr = $htmlInner->find('tbody p',0)->innertext;
-            $day = trim(mb_substr((explode(',',$dateStr)[1]),0,3));
+           
             $date = Parse::formDateMonth($dateStr,$day);
             $time = explode('в ',$dateStr)[1].':00';
-            if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
-                continue; 
-            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
+            $option = Parse::checkDate($date); 
+            if ($option == 1){
                 continue;
+            }elseif($option == 2){
+                break;
             }
+            $title = $div->find('a',0)->plaintext;
+            $url = explode('url(',($htmlInner->find('div.elementor-cta__bg.elementor-bg',0)->getAttribute('style')));
+            $img_url = mb_substr($url[1],0,-2);
 
             if(($htmlInner->find('tbody p',3)->innertext) == 'бесплатная'){
                 $free = true;
@@ -228,24 +216,20 @@ class Parse{
             $guideId = Parse::getGuideId($guide, $guidesArr);
             
             $descr = $htmlInner->find('div[role=tabpanel] p',0)->innertext;
-            if(mb_strlen($descr)>$descrMax){
-                $descr = Parse::reduceDescr($descr);
-            }
+            $descr = Parse::reduceDescr($descr);
 
             $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
             VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");   
             $i++;  
         } 
-        echo("\n\rReceived records from Moscoviti.ru: ".$i);
-        echo(" \nExecution time: ".(time() - $startTime)." secs");
+        fwrite($fOpen,'Received records from Moscoviti.ru: '.$i);
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n"); 
     }
 
     public static function parseMH() {
 
         global $mysqli;
-        global $days;
-        global $descrMax;
-        global $period;
+        global $fOpen;
         
         $guideId = 0;
         
@@ -265,11 +249,12 @@ class Parse{
            $date = Parse::formDateMonth(' '.$dataArr[3],$day);
            $time = $dataArr[5].':00';
         
-           if($period == 'Day' && (strtotime($date) !== strtotime('today + '.$days.' day'))){
-            continue; 
-            }elseif(strtotime($date) > strtotime('today + '.$days.' day')){
-                continue;
-            }
+           $option = Parse::checkDate($date); 
+           if ($option == 1){
+               continue;
+           }elseif($option == 2){
+               break;
+           }
         
            $img_url = $div->getAttribute('data-img');
            $link = $div->getAttribute('data-link');
@@ -280,23 +265,69 @@ class Parse{
     
            $htmlInner = file_get_html( $link );
            $descr = ($htmlInner->find('div.catalog-body__about p',0)->plaintext).'...';
-           if(mb_strlen($descr)>$descrMax){
-             $descr = Parse::reduceDescr($descr);
-           }  
-    
+            $descr = Parse::reduceDescr($descr);  
+
             $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
             VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");   
             $i++;      
         } 
-        echo(' Received records from Moskvahod: '.$i);
-        echo(' Execution time: '.(time() - $startTime).' secs');
+        fwrite($fOpen,'Received records from Moskvahod.ru: '.$i);
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n"); 
+    }
+
+    public static function parseMSt(){
+        
+        global $mysqli;
+        global $fOpen;
+       
+        $html = file_get_html('https://moscowsteps.com/timetable');
+        $i=0;
+        $startTime = time();
+        $guidesArr = Parse::formGuidesArr();
+        $free = false;
+        $site = 'Moscowsteps';
+    
+        foreach($html->find('td[id]') as $tableDay){
+            $date= $tableDay->getAttribute('data-fulldate');
+            $option = Parse::checkDate($date); 
+            if ($option == 1){
+                continue;
+            }elseif($option == 2){
+                break;
+            }
+
+            foreach($tableDay->find('span.dop') as $div){
+                $time = $div->find('b.time_ex',0)->plaintext;
+                $title = $div->find('a',0)->plaintext;
+                $link = $div->find('a',0)->href;
+                $link = 'https://moscowsteps.com/'.$link;
+                $htmlInner = file_get_html( $link );
+                $img_url = $htmlInner->find('td.mmm img',0)->getAttribute('src');
+                $img_url = 'https://moscowsteps.com/'.$img_url;
+                $guideStr = explode(' ',$htmlInner->find('a[href=/guides]',0)->innertext);
+                $guide = $guideStr[1].' '.$guideStr[0];
+                $guideId = Parse::getGuideId($guide, $guidesArr);
+                $descr = $htmlInner->find('div[style=text-align: justify!important;] span',0)->plaintext;
+                if (strtok($descr,'!') == 'ВНИМАНИЕ'){
+                    $descr = $htmlInner->find('div[style=text-align: justify!important;] span',1)->plaintext;
+                }
+                $descr = Parse::reduceDescr($descr);
+
+                $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+                VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
+                $i++;
+            }       
+        }
+           
+        fwrite($fOpen,'Received records from Moscowsteps.com: '.$i);
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
     public static function formDateMonth($dateStr,$day) {
         if (strlen($day) == 1){
             $day = '0'.$day;
         }
-        if (strpos($dateStr,'января') != false) {$date = '2021-01-'.$day;
+        if (strpos($dateStr,'январ') != false) {$date = '2021-01-'.$day;
             }elseif(strpos($dateStr,'феврал') != false) {$date = '2021-02-'.$day;
             }elseif(strpos($dateStr,'март') != false) {$date = '2021-03-'.$day;
             }elseif(strpos($dateStr,'апрел') != false) {$date = '2021-04-'.$day;
@@ -327,6 +358,7 @@ class Parse{
 
     public static function getGuideId($guide) {
         global $mysqli;
+        global $fOpen;
         
         $found = false;
         $maxId = 0;
@@ -350,16 +382,35 @@ class Parse{
             $guideId = $maxId + 1;
             $mysqli -> query("SET FOREIGN_KEY_CHECKS = 0");
             $mysqli->query("INSERT INTO `guides` (`id`,`guide`) VALUES ('$guideId','$guide')");
-            echo('Added guide: '.$guide.'(id='.$guideId.') ');
+            fwrite($fOpen,'  Added guide: '.$guide.' (id='.$guideId.')'."\n");
+            //echo('  Added guide: '.$guide.' (id='.$guideId.')'."\n");
         }
 
         return($guideId);
     }
 
     public static function reduceDescr($descr) {    
-        $arr = explode(' ',mb_substr($descr,0,795));
-        array_pop($arr);
-        return(implode(' ', $arr).'...');
+        global $descrMax;
+
+        if(mb_strlen($descr)>$descrMax){
+            $arr = explode(' ',mb_substr($descr,0,$descrMax));
+            array_pop($arr);
+            return(implode(' ', $arr).'...');
+        }else{return($descr);
+        } 
+    }
+
+    public static function checkDate($date){  // Возвращает 0 чтобы цикл продолжился, 1 чтобы continue, 2 чтобы break
+    
+        global $days;
+
+        if((strtotime($date) == strtotime('today + '.$days.' day'))){
+            return(0); 
+        }else if ((strtotime($date) < strtotime('today + '.$days.' day'))){
+            return(1);
+        }else {
+            return(2);
+        }
     }
 
 }   // End of class

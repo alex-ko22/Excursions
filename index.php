@@ -8,13 +8,12 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
-    <title>Экскурсии в Москве</title>
+    <title>Все экскурсии Москвы</title>
   </head>
   <body>
     <div class="container">
       <div class="row header my-3 position-relative">
         <img src="img/DSC01860.jpg" id="main-image" class="img-fluid px-0" alt="">
-        <!-- <a href="#" data-bs-toggle="modal" data-bs-target="#mod" class="about position-absolute top-0 start-0">О проекте</a> -->
         <a href="#" onclick="showModalWindow('О проекте','about'); return false" class="about position-absolute top-0 start-0">О проекте</a> 
         <div class="position-absolute top-50 start-0 text-center">
          <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
@@ -40,12 +39,13 @@
             <div class="filter-site" >
               <p class="mb-1">Сайты</p>
               <select class="form-select" name="site" aria-label="Default select example">
-                <option selected value=" ">Все 5</option>
+                <option selected value=" ">Все 6</option>
                 <option id="ms" value="Mosstreets">Mosstreets</option>
                 <option value="Moscowwalking">Moscowwalking</option>
                 <option value="Tvoyamoskva">Tvoyamoskva</option>
                 <option value="Moscoviti">Moscoviti</option>
                 <option value="Moskvahod">Moskvahod</option>
+                <option value="Moscowsteps">Moscowsteps</option>
               </select>
             </div>
             <div class="filter-date col">
@@ -94,7 +94,7 @@
       <div id="modal__" >
         <img id="modal__cross" src="img/x-square.svg" alt="">  
         <h5 id="modal__guide"></h5>
-        <img id="modal__img" src="" alt="">
+        <img id="modal__img" src="" alt=""  class="img-fluid">
         <p id="modal__content"></p>
       </div>
       
