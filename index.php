@@ -4,6 +4,8 @@
     <!-- Обязательные метатеги -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="origin"/>
+    <meta name="description" content="На сайте в единообразном виде представлены пешие (и не только) экскурсии по Москве на ближайшие дни от наиболее популярных тематических площадок"/>
 
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -13,7 +15,7 @@
   <body>
     <div class="container">
       <div class="row header my-3 position-relative">
-        <img src="img/DSC01860.jpg" id="main-image" class="img-fluid px-0" alt="">
+        <img src="img/moscow_main.jpg" id="main-image" class="img-fluid px-0" alt="">
         <a href="#" onclick="showModalWindow('О проекте','about'); return false" class="about position-absolute top-0 start-0">О проекте</a> 
         <div class="position-absolute top-50 start-0 text-center">
          <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
@@ -104,10 +106,11 @@
         <p id="copiright">© 2021 Copyright: AEK</p>
         <img src="img/envelope.svg" alt="">
         <p id="email">mos-guides@mail.ru</p>
+        <p id="share" class="ya-share2" data-services="vkontakte,twitter,facebook,viber,whatsapp,telegram"></p>
     </div>
     
     <script src="js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-      
+    <script src="https://yastatic.net/share2/share.js" async></script>
   </body>
 </html>

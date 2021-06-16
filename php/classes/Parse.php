@@ -4,6 +4,7 @@ class Parse{
 
         global $mysqli;
         global $fOpen;
+        global $newDayStr;
            
         $html = file_get_html('http://moscowwalking.ru/#schedule');
         $i=0;
@@ -32,6 +33,12 @@ class Parse{
                 $urlInner = $htmlInner->find('div[data-img-zoom-url]',0);
                 $url = explode("'",$urlInner);
                 $img_url = 'http://moscowwalking.ru'.$url[1];
+                
+                $url_tmp = Parse::saveImgFile($img_url); 
+                if ($url_tmp != '0'){
+                    $img_url = $url_tmp;
+                };
+
                 $descr = $htmlInner->find('div.t232__text.t-text.t-text_sm',0)->plaintext;
                 //$descr = str_replace($descr,'<br>','');
                 $descr = Parse::reduceDescr($descr);             
@@ -88,6 +95,10 @@ class Parse{
                
             $url = explode('image:',$divmini = $div->find('div.mini',0)->getAttribute('style'));
             $img_url = mb_substr(mb_substr($url[1],5),0,-2);
+            $url_tmp = Parse::saveImgFile($img_url); 
+            if ($url_tmp != '0'){
+                $img_url = $url_tmp;
+            };
             $title = $div->find('div.desc p',0)->plaintext; 
             $price = $div->find('div.desc p',2)->plaintext;
             if( $price == 'бесплатная экскурсия') {
@@ -150,6 +161,10 @@ class Parse{
     
             $htmlInner = file_get_html( $link );
             $img_url = $htmlInner->find('img',0)->getAttribute('src');
+            $url_tmp = Parse::saveImgFile($img_url); 
+            if ($url_tmp != '0'){
+                $img_url = $url_tmp;
+            };
             $descr1 = $htmlInner->find('div.about-excursion__description p',3)->plaintext;
             $descr2 = $htmlInner->find('div.about-excursion__description p',4)->plaintext;
             $descr = Parse::reduceDescr($descr1.$descr2);
@@ -205,6 +220,10 @@ class Parse{
             $title = $div->find('a',0)->plaintext;
             $url = explode('url(',($htmlInner->find('div.elementor-cta__bg.elementor-bg',0)->getAttribute('style')));
             $img_url = mb_substr($url[1],0,-2);
+            $url_tmp = Parse::saveImgFile($img_url); 
+            if ($url_tmp != '0'){
+                $img_url = $url_tmp;
+            };
 
             if(($htmlInner->find('tbody p',3)->innertext) == 'бесплатная'){
                 $free = true;
@@ -257,6 +276,10 @@ class Parse{
            }
         
            $img_url = $div->getAttribute('data-img');
+           $url_tmp = Parse::saveImgFile($img_url); 
+           if ($url_tmp != '0'){
+               $img_url = $url_tmp;
+           };
            $link = $div->getAttribute('data-link');
            if(!get_headers($link, 1)){
             continue;
@@ -304,6 +327,10 @@ class Parse{
                 $htmlInner = file_get_html( $link );
                 $img_url = $htmlInner->find('td.mmm img',0)->getAttribute('src');
                 $img_url = 'https://moscowsteps.com/'.$img_url;
+                $url_tmp = Parse::saveImgFile($img_url); 
+                if ($url_tmp != '0'){
+                    $img_url = $url_tmp;
+                };
                 $guideStr = explode(' ',$htmlInner->find('a[href=/guides]',0)->innertext);
                 $guide = $guideStr[1].' '.$guideStr[0];
                 $guideId = Parse::getGuideId($guide, $guidesArr);
@@ -411,6 +438,17 @@ class Parse{
         }else {
             return(2);
         }
+    }
+
+    public static function saveImgFile ($img_url){
+        
+        global $imgDir;
+
+        $filePath = $imgDir.substr(time(),7).'_'.basename($img_url);
+        
+        if (file_put_contents($filePath, file_get_contents($img_url))){ 
+            return (substr($filePath,3));
+        }else return '0';
     }
 
 }   // End of class

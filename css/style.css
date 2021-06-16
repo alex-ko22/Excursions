@@ -59,6 +59,7 @@
     margin-right: 50px;
     margin-bottom:10px;
 }
+
 .about {
     color: midnightblue;
     text-decoration: none;
@@ -88,7 +89,8 @@
     visibility: hidden;
      
     /*  Установаем ширину окна  */
-    max-width: 80vh;
+    min-width: 60%;
+    /* max-width: 80vh; */
     max-height: 80vh;
     
     /*  Центрируем и задаем z-index */
@@ -126,7 +128,6 @@
    opacity: 1;
    visibility: visible;
 }
-
 #modal__img {
     max-width: 130px;
     float:left;
@@ -134,7 +135,6 @@
     margin-top: 10px;
     box-shadow: 0 0 5px rgba(0,0,0,0.5); 
 }
-
 .guide {
     cursor: pointer;
     color:midnightblue;
@@ -142,4 +142,6 @@
 .guide:hover {
     color:cadetblue;
 }
-
+#share {
+    padding-top: 5px;
+}
