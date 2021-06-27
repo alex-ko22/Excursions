@@ -161,6 +161,9 @@ class Parse{
     
             $htmlInner = file_get_html( $link );
             $img_url = $htmlInner->find('img',0)->getAttribute('src');
+            if($img_url == ''){
+                $img_url = $htmlInner->find('img',1)->getAttribute('src');
+            }
             $url_tmp = Parse::saveImgFile($img_url); 
             if ($url_tmp != '0'){
                 $img_url = $url_tmp;
@@ -249,6 +252,7 @@ class Parse{
 
         global $mysqli;
         global $fOpen;
+        global $days;
         
         $guideId = 0;
         
@@ -259,6 +263,16 @@ class Parse{
     
         $startTime = time();
         $guidesArr = Parse::formGuidesArr();
+
+        $currentMonthStr = $html->find('span.calendar-header-month-current',0)->innertext;
+        $currentMonthDate = Parse::formDateMonth($currentMonthStr,1);
+        $mnthStr = date('mm',strtotime('today + '.$days.' day'));
+        if(substr($currentMonthDate,5,2) != $mnthStr){
+            $nextMonthUrl = $html->find('a.calendar-header-month-next',0)->getAttribute('data-month');
+            $nextMonthUrl = 'https://www.moskvahod.ru/month/?month='.$nextMonthUrl;
+            $html = file_get_html($nextMonthUrl);
+        }
+
     
         foreach($html->find('div[data-info]') as $div){
            $dataArr = explode(' ',$div->getAttribute('data-info'));
@@ -444,7 +458,7 @@ class Parse{
         
         global $imgDir;
 
-        $filePath = $imgDir.substr(time(),7).'_'.basename($img_url);
+        $filePath = $imgDir.substr(microtime('as_float'),12).'_'.basename($img_url);
         
         if (file_put_contents($filePath, file_get_contents($img_url))){ 
             return (substr($filePath,3));

@@ -335,11 +335,19 @@ function showModalWindow(title,descr,img_src) {
       modal__.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflowY = 'auto';
-      });
+    });
     overlay.addEventListener('click', ()=> {
       modal__.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflowY = 'auto';
-        });  
+    });  
+
+   /*  document.body.addEventListener('keydown', (event)=> {
+      if (event.code == 'Escape') {
+        modal__.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflowY = 'auto';
+      };
+    }); */
 
 }

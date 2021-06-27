@@ -23,12 +23,12 @@
     fwrite($fOpen, "\n".date('d-m-Y H:i:s')."\n");
     fwrite($fOpen,'New date: '.$newDayStr."\n");
     
-    Parse::parseMS();
-    Parse::parseMW();
-    Parse::parseTM();
-    Parse::parseMV();
+    //Parse::parseMS();
+    //Parse::parseMW();
+    //Parse::parseTM();
+    //Parse::parseMV();
     Parse::parseMH(); 
-    Parse::parseMSt();
+    //Parse::parseMSt();
 
     fclose($fOpen);
 
