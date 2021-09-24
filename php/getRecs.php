@@ -3,6 +3,7 @@
     
     header('Content-type: text/html; charset=utf-8');
     require_once('db.php');
+    global $mysqli;
 
     if(($site = $_POST['site']) != ' '){
         $site = ' AND `site` = "'.$site.'"';
@@ -41,5 +42,3 @@
     }
     
     echo json_encode($recs, JSON_UNESCAPED_UNICODE); 
-
-?>

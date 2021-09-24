@@ -2,6 +2,7 @@
 
 header('Content-type: text/html; charset=utf-8'); 
 require_once('db.php');
+global $mysqli;
 
 $exc_id = $_POST['exc_id'];
 
