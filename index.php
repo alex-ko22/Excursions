@@ -23,19 +23,20 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="icon" href="https://mos-guides.ru/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="https://mos-guides.ru/favicon.png" type="image/x-icon">
     <title>Все экскурсии Москвы</title>
   </head>
   <body>
     <div class="container">
       <div class="row header my-3 position-relative">
         <img src="img/moscow_main.jpg" id="main-image" class="img-fluid px-0" alt="">
-        <a href="#" onclick="showModalWindow('О проекте','about'); return false" class="about position-absolute top-0 start-0">О проекте</a> 
+        <!-- <a href="#" onclick="showModalWindow('О проекте','about'); return false" class="about position-absolute top-0 start-0">О проекте</a>  -->
         <div class="position-absolute top-50 start-0 text-center">
-         <h1 id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
+          <h1 class="d-none d-sm-block" id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
+          <h2 class="d-sm-none" id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h2>
         </div>
       </div>
-      <form class="filter bg-light" id="forma" onsubmit="showRecs(this); return false;">
+      <form class="filter bg-light" id="form" onsubmit="showRecs(this); return false;">
           <div class="row row-cols-sm-4">
             <div class="filter-free" >
               <p class="mb-1">Тип</p>
@@ -78,13 +79,13 @@
             <div class="mt-1 text-end">Показывать в виде:</div>
             <div> 
               <div class="form-check mt-0">
-                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" onclick="showRecs(forma)" checked>
+                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" onclick="showRecs(form)" checked>
                 <label class="form-check-label" for="flexRadioDefault2">
                   Карточек
                 </label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable" onclick="showRecs(forma)">
+                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable" onclick="showRecs(form)">
                 <label class="form-check-label" for="flexRadioDefault1">
                   Таблицы
                 </label>
@@ -100,18 +101,18 @@
       </form>
       <div class="content">
         <table class="table table-striped" id="tbody"></table>
-        <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 gy-2 justify-content-center"></div> 
+        <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 row-cols-xl-6 gy-2 justify-content-center"></div>
       </div> 
       <hr>
       
       <!-- Подложка под модальным окном -->
       <div id="overlay"></div>
       <!-- Модальное окно -->
-      <div id="modal__" >
-        <img id="modal__cross" src="img/x-square.svg" alt="">  
-        <h5 id="modal__guide"></h5>
-        <img id="modal__img" src="" alt=""  class="img-fluid">
-        <p id="modal__content"></p>
+      <div id="modal" >
+        <img id="modal_cross" src="img/x-square.svg" alt="">
+        <h5 id="modal_guide"></h5>
+        <img id="modal_img" src="" alt=""  class="img-fluid">
+        <p id="modal_content"></p>
       </div>
       
     

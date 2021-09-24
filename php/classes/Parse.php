@@ -357,7 +357,6 @@ class Parse{
             $day = '0'.$day;
         }
 
-        //$year = getdate(strtotime('today + '.$days.' day'))['year']
         $arrDate = getdate(strtotime('today'));
         $year = $arrDate['year'];
         if (($arrDate['yday'] + $days) > 365) $year = $year + 1;

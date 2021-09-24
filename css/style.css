@@ -82,7 +82,7 @@
     z-index: 20;
     transition: .3s all;
  }
- #modal__ {
+ #modal {
    
     /* Скрываем окна  */
     opacity: 0;
@@ -114,7 +114,7 @@
  
  /* Стили для кнопки закрытия */
  
- #modal__cross {
+ #modal_cross {
     width: 20px;
     height: 20px;
     fill: #444;
@@ -123,12 +123,12 @@
     margin-left:15px;
  }
 
-#modal__.active,
+#modal.active,
 #overlay.active{
    opacity: 1;
    visibility: visible;
 }
-#modal__img {
+#modal_img {
     max-width: 130px;
     float:left;
     margin-right:10px;

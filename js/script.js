@@ -16,7 +16,7 @@ function showRecs(form) {
   tbody.innerHTML = '';
   cards.innerHTML = '';
    
-  if(modeTable.checked == true){
+  if(modeTable.checked){
     showRecsTable(form);
   }else{
     showRecsCard(form);
@@ -41,7 +41,6 @@ function showRecsTable(form) {
     let free = '';
     let dayStr = '';
     let i = -1;
-    let fav = ' ';
     
     const formData = new FormData(form);
     
@@ -53,7 +52,7 @@ function showRecsTable(form) {
           if (recs.free == 1){free = ''
           }else{free = '$'}
 
-          fav = getFavicon(recs.site);
+          let fav = getFavicon(recs.site);
           
           let day = getDayOfWeek(recs.date);
           dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
@@ -64,7 +63,7 @@ function showRecsTable(form) {
             <td>${free}</td>            
             <td class="guide" onclick="showModalGuide(${recs.guide_id})">${recs.guide}</td>
             <td>${dayStr}</td>
-            <td><img class = "favicon" src = "${fav}"><a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a></td>
+            <td><img class = "favicon" alt=" " src = "${fav}"><a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a></td>
           </tr>
         `       
         i = index;
@@ -128,14 +127,14 @@ function showRecsCard(form) {
         
         code += `
         <div class="card text-center border border-1">
-          <img src="${recs.img_url}" class="picture my-2">
+          <img src="${recs.img_url}" class="picture my-2" alt=" ">
           <h5 class="title" onclick="showModalDescr(${recs.exc_id})">${recs.title}</h5>
           <p>${dayStr}</p>
           <p class="guide" onclick="showModalGuide(${recs.guide_id})">${recs.guide}</p>
           <p>${free}</p>
           <p class="mb-1">Перейти к экскурсии на</p>
           <div class = "div-favicon mb-3">
-            <img src="${fav}" class="favicon">
+            <img src="${fav}" class="favicon" alt=" ">
             <a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a>
           </div>
           </div>
@@ -193,7 +192,7 @@ function formDateSelector(){
   `;
   let now = new Date();
   let daysList = document.getElementById("days-list");
-  let i = 0;
+  let i;
   let dayStr = '';
 
   for(i = 1; i <= 9; i++){
@@ -290,7 +289,7 @@ function showModalDescr(exc_id) {
     body: formData
     }).then(response=>response.json())
       .then(result => {
-        showModalWindow(result.guide,result.descr);
+        showModalWindow(result.guide,result.descr,result.img_url);
       });
 }
 
@@ -308,46 +307,26 @@ function showModalGuide(guide_id) {
 }
 
 function showModalWindow(title,descr,img_src) {
-    if (descr == 'about'){
-      descr = `Этот сайт возник как учебный проект для сдачи диплома на 2х месячных курсах по web-программированию. При
-      выборе темы диплома мне показалось интересным собрать в одном месте все предложения по пешим экскурсиям по Москве
-       с соответствующих сайтов. Сам я периодически посещаю подобные мероприятия, мне 
-      нравится прогуляться по Москве пару часов, да при этом ещё и узнать что-то новенькое - приятно и полезно. 
-      Но каждый раз приходилось заглядывать на разные ресурсы, чтобы найти подходящий вариант. Теперь стало 
-      попроще). Страничка получилась немудрёной, но задачи свои выполняет. Если у публики будет интерес к моей идее,
-      то проект можно будет развить, добавляя функционал и контент. Все ваши отзывы, пожелания, негодования отправляйте
-      на адрес электронной почты, указанный внизу основной страницы.`
-    }
-    else if (descr != 'about' && arguments.length == 2){
-      descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
-      title = title + ':'
-    }
+
+    descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
+    title = title + ':'
 
     document.body.style.overflowY = 'hidden';
-    modal__.style.overflowY = 'auto'; 
-    modal__.classList.add('active');
+    modal.style.overflowY = 'auto';
+    modal.classList.add('active');
     overlay.classList.add('active');
-    modal__content.innerHTML = descr;
-    modal__guide.innerText = title;
-    modal__img.src = img_src;
+    modal_content.innerHTML = descr;
+    modal_guide.innerText = title;
+    modal_img.src = img_src;
     
-    modal__cross.addEventListener('click', ()=>{  
-      modal__.classList.remove('active');
+    modal_cross.addEventListener('click', ()=>{
+      modal.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflowY = 'auto';
     });
     overlay.addEventListener('click', ()=> {
-      modal__.classList.remove('active');
+      modal.classList.remove('active');
       overlay.classList.remove('active');
       document.body.style.overflowY = 'auto';
-    });  
-
-   /*  document.body.addEventListener('keydown', (event)=> {
-      if (event.code == 'Escape') {
-        modal__.classList.remove('active');
-        overlay.classList.remove('active');
-        document.body.style.overflowY = 'auto';
-      };
-    }); */
-
+    });
 }
