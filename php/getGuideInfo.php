@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Скрипт получения из базы всех полей для гида по его id
+ */
 header('Content-type: text/html; charset=utf-8'); 
 require_once('db.php');
 global $mysqli;

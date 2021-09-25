@@ -1,6 +1,7 @@
  <?php
-    // Функция формирования запроса к базе
-    
+ /**
+  * Скрипт запроса к базе по параметрам из формы
+  */
     header('Content-type: text/html; charset=utf-8');
     require_once('db.php');
     global $mysqli;

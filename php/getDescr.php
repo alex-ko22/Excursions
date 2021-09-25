@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Скрипт получения из базы поля описания
+ */
 header('Content-type: text/html; charset=utf-8'); 
 require_once('db.php');
 global $mysqli;
