@@ -1,18 +1,18 @@
 <?php
-    
     header('Content-type: text/html; charset=utf-8');
     require_once('classes/simple_html_dom.php');
     require_once('classes/Parse.php');
     require_once('db.php');
-        
-    $days = 9;  // Количество дней для загрузки в базу 
-    $descrMax = 1499; // Максимальное количество символов в описании
+
+    const DAYS_SHIFT = 9; // Через какое количество дней от сегодняшней даты будет дата загрузки
+    const DESCRIP_MAXLENGTH = 1499; // Максимальное количество символов в описании
+    global $mysqli;
     $imgDir = '';
 
     mysqli_query($mysqli, "SET FOREIGN_KEY_CHECKS = 0");
     mysqli_query($mysqli,"DELETE FROM `excursion` WHERE `date` BETWEEN CURRENT_DATE() - INTERVAL 1 DAY AND CURRENT_DATE() - INTERVAL 1 DAY");
 
-    $newDayStr = date('d-m-Y', strtotime('today + '.$days.' day'));
+    $newDayStr = date('d-m-Y', strtotime('today + '.DAYS_SHIFT.' day'));
     $imgDir = '../img/exc_imgs/'.$newDayStr.'/';
     mkdir($imgDir);
 
@@ -23,13 +23,11 @@
     fwrite($fOpen, "\n".date('d-m-Y H:i:s')."\n");
     fwrite($fOpen,'New date: '.$newDayStr."\n");
     
-    //Parse::parseMS();
-    //Parse::parseMW();
-    //Parse::parseTM();
-    //Parse::parseMV();
-    Parse::parseMH(); 
-    //Parse::parseMSt();
+    Parse::parseMS();
+    Parse::parseMW();
+    Parse::parseTM();
+    Parse::parseMV();
+    Parse::parseMH();
+    Parse::parseMSt();
 
     fclose($fOpen);
-
-?>

@@ -1,7 +1,13 @@
 <?php
-class Parse{
-    public static function parseMW() { 
 
+/**
+ * Класс, отвечающий за парсинг
+ */
+class Parse{
+    /**
+     * Парсинг сайта moscowwalking.ru
+     */
+    public static function parseMW() {
         global $mysqli;
         global $fOpen;
            
@@ -62,11 +68,12 @@ class Parse{
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");    
     }
 
+    /**
+     * Парсинг сайта mosstreets.ru
+     */
     public static function parseMS() {
-
         global $mysqli;
         global $fOpen;
-        global $days;
 
         $html = file_get_html('https://mosstreets.ru/schedule/');
         $i = 0;
@@ -74,15 +81,13 @@ class Parse{
         $startTime = time();
     
         foreach($html->find('div.trio') as $div){
-                   
             $dateStr= $div->find('div.desc p',1)->plaintext;
             $year = getdate(strtotime('today'))['year'];
             $date = $year.'-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
-            var_dump($date);
-            if (getdate(strtotime($date))['yday'] < $days) {
+
+            if (getdate(strtotime($date))['yday'] < DAYS_SHIFT) {
                 $date = ($year + 1).'-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
             }
-            var_dump($date);
             $time = substr($dateStr,16,5).':00';
 
             $option = Parse::checkDate($date);
@@ -123,8 +128,10 @@ class Parse{
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
+    /**
+     * Парсинг сайта tvoyamoskva.ru
+     */
     public static function parseTM(){
-
         global $mysqli;
         global $fOpen;
 
@@ -180,8 +187,10 @@ class Parse{
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
+    /**
+     * Парсинг сайта moscoviti.ru
+     */
     public static function parseMV(){
-
         global $mysqli;
         global $fOpen;
 
@@ -191,7 +200,6 @@ class Parse{
         $startTime = time();
 
         foreach($html->find('span.tg-block') as $div){
-
             $link = $div->find('a',0)->href;
             if(mb_substr($link,0,3) != 'htt') {
                 $link = 'https://moscoviti.ru/product/'.$link;
@@ -240,22 +248,22 @@ class Parse{
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
+    /**
+     * Парсинг сайта moskvahod.ru
+     */
     public static function parseMH() {
-
         global $mysqli;
         global $fOpen;
-        global $days;
 
         $html = file_get_html('https://www.moskvahod.ru/month/%D0%A0%D0%B0%D1%81%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BF%D1%80%D0%BE%D0%B3%D1%83%D0%BB%D0%BE%D0%BA-%D0%BF%D0%BE-%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B5/%D0%BF%D0%B5%D1%88%D0%B5%D1%85%D0%BE%D0%B4%D0%BD%D1%8B%D0%B5-%D1%8D%D0%BA%D1%81%D0%BA%D1%83%D1%80%D1%81%D0%B8%D0%B8/');
         $i = 0;
         $site = 'Moskvahod';
         $free = false;
-
         $startTime = time();
 
         $currentMonthStr = $html->find('span.calendar-header-month-current',0)->innertext;
         $currentMonthDate = Parse::formDateMonth($currentMonthStr,1);
-        $monthStr = date('mm',strtotime('today + '.$days.' day'));
+        $monthStr = date('mm',strtotime('today + '.DAYS_SHIFT.' day'));
         if(substr($currentMonthDate,5,2) != $monthStr){
             $nextMonthUrl = $html->find('a.calendar-header-month-next',0)->getAttribute('data-month');
             $nextMonthUrl = 'https://www.moskvahod.ru/month/?month='.$nextMonthUrl;
@@ -298,8 +306,10 @@ class Parse{
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
+    /**
+     * Парсинг сайта moscowsteps.com
+     */
     public static function parseMSt(){
-
         global $mysqli;
         global $fOpen;
 
@@ -349,17 +359,20 @@ class Parse{
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
-    public static function formDateMonth($dateStr,$day) {
-
-        global $days;
-
+    /**
+     * Функция формирует дату в формате yyyy-mm-dd из текстового месяца на кириллице и даты
+     * @param $dateStr
+     * @param $day
+     * @return string
+     */
+    public static function formDateMonth($dateStr, $day) {
         if (strlen($day) == 1){
             $day = '0'.$day;
         }
 
         $arrDate = getdate(strtotime('today'));
         $year = $arrDate['year'];
-        if (($arrDate['yday'] + $days) > 365) $year = $year + 1;
+        if (($arrDate['yday'] + DAYS_SHIFT) > 365) $year = $year + 1;
 
         if (strpos($dateStr,'январ') != false) {$date = $year.'-01-'.$day;
             }elseif(strpos($dateStr,'феврал') != false) {$date = $year.'-02-'.$day;
@@ -378,6 +391,11 @@ class Parse{
         return($date);
     }
 
+    /**
+     * Функция возвращает id гида по его имени и фамилии, если не найден - добавляет в базу
+     * @param $guide
+     * @return int|mixed
+     */
     public static function getGuideId($guide) {
         global $mysqli;
         global $fOpen;
@@ -407,36 +425,45 @@ class Parse{
             $mysqli->query("INSERT INTO `guides` (`id`,`guide`) VALUES ('$guideId','$guide')");
             fwrite($fOpen,'  Added guide: '.$guide.' (id='.$guideId.')'."\n");
         }
-
         return($guideId);
     }
 
+    /**
+     * Функция обрезает описание экскурсии до глобального параметра DESCRIP_MAXLENGTH и ставит в конце три точки
+     * @param $descr
+     * @return mixed|string
+     */
     public static function reduceDescr($descr) {
-        global $descrMax;
-
-        if(mb_strlen($descr)>$descrMax){
-            $arr = explode(' ',mb_substr($descr,0,$descrMax));
+        if(mb_strlen($descr)>DESCRIP_MAXLENGTH){
+            $arr = explode(' ',mb_substr($descr,0,DESCRIP_MAXLENGTH));
             array_pop($arr);
             return(implode(' ', $arr).'...');
         }else{return($descr);
         } 
     }
 
-    public static function checkDate($date){  // Возвращает 0 чтобы цикл продолжился, 1 чтобы continue, 2 чтобы break
-    
-        global $days;
-
-        if((strtotime($date) == strtotime('today + '.$days.' day'))){
+    /**
+     * Функция возвращает 0 чтобы цикл продолжился, 1 чтобы continue, 2 чтобы break в зависимости от входной даты
+     * @param $date
+     * @return int
+     */
+    public static function checkDate($date){
+        if((strtotime($date) == strtotime('today + '.DAYS_SHIFT.' day'))){
             return(0); 
-        }else if ((strtotime($date) < strtotime('today + '.$days.' day'))){
+        }else if ((strtotime($date) < strtotime('today + '.DAYS_SHIFT.' day'))){
             return(1);
         }else {
             return(2);
         }
     }
 
+    /**
+     * Функция копирует фотографию на локальный диск в папку, указанную в глобальном параметре $imgDir,
+     * прибавляя к имени файла случайное число
+     * @param $img_url
+     * @return false|string
+     */
     public static function saveImgFile ($img_url){
-        
         global $imgDir;
 
         $filePath = $imgDir.substr(microtime('as_float'),12).'_'.basename($img_url);
