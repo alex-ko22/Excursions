@@ -263,7 +263,7 @@ class Parse{
 
         $currentMonthStr = $html->find('span.calendar-header-month-current',0)->innertext;
         $currentMonthDate = Parse::formDateMonth($currentMonthStr,1);
-        $monthStr = date('mm',strtotime('today + '.DAYS_SHIFT.' day'));
+        $monthStr = date('m',strtotime('today + '.DAYS_SHIFT.' day'));
         if(substr($currentMonthDate,5,2) != $monthStr){
             $nextMonthUrl = $html->find('a.calendar-header-month-next',0)->getAttribute('data-month');
             $nextMonthUrl = 'https://www.moskvahod.ru/month/?month='.$nextMonthUrl;
@@ -373,21 +373,21 @@ class Parse{
         $arrDate = getdate(strtotime('today'));
         $year = $arrDate['year'];
         if (($arrDate['yday'] + DAYS_SHIFT) > 365) $year = $year + 1;
+        $dateStr = mb_strtolower($dateStr);
 
-        if (strpos($dateStr,'январ') != false) {$date = $year.'-01-'.$day;
-            }elseif(strpos($dateStr,'феврал') != false) {$date = $year.'-02-'.$day;
-            }elseif(strpos($dateStr,'март') != false) {$date = $year.'-03-'.$day;
-            }elseif(strpos($dateStr,'апрел') != false) {$date = $year.'-04-'.$day;
-            }elseif(strpos($dateStr,'мая') != false || strpos($dateStr,'май') != false) {$date = $year.'-05-'.$day;
-            }elseif(strpos($dateStr,'июн') != false) {$date = $year.'-06-'.$day;
-            }elseif(strpos($dateStr,'июл') != false) {$date = $year.'-07-'.$day;
-            }elseif(strpos($dateStr,'август') != false) {$date = $year.'-08-'.$day;
-            }elseif(strpos($dateStr,'сентябр') != false) {$date = $year.'-09-'.$day;
-            }elseif(strpos($dateStr,'октябр') != false) {$date = $year.'-10-'.$day;
-            }elseif(strpos($dateStr,'ноябр') != false) {$date = $year.'-11-'.$day;
-            }elseif(strpos($dateStr,'декабр') != false) {$date = $year.'-12-'.$day;
+        if (strpos($dateStr,'январ') !== false) {$date = $year.'-01-'.$day;
+            }elseif(strpos($dateStr,'феврал') !== false) {$date = $year.'-02-'.$day;
+            }elseif(strpos($dateStr,'март') !== false) {$date = $year.'-03-'.$day;
+            }elseif(strpos($dateStr,'апрел') !== false) {$date = $year.'-04-'.$day;
+            }elseif(strpos($dateStr,'мая') !== false || strpos($dateStr,'май') != false) {$date = $year.'-05-'.$day;
+            }elseif(strpos($dateStr,'июн') !== false) {$date = $year.'-06-'.$day;
+            }elseif(strpos($dateStr,'июл') !== false) {$date = $year.'-07-'.$day;
+            }elseif(strpos($dateStr,'август') !== false) {$date = $year.'-08-'.$day;
+            }elseif(strpos($dateStr,'сентябр') !== false) {$date = $year.'-09-'.$day;
+            }elseif(strpos($dateStr,'октябр') !== false) {$date = $year.'-10-'.$day;
+            }elseif(strpos($dateStr,'ноябр') !== false) {$date = $year.'-11-'.$day;
+            }elseif(strpos($dateStr,'декабр') !== false) {$date = $year.'-12-'.$day;
             }else {$date = $year.'-01-01';}
-            
         return($date);
     }
 
