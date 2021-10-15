@@ -6,10 +6,12 @@ loadGuides();
 formDateSelector();
 setTimeout(()=>{btn.click();},1000);
 
-// Функция выбора вида показа - таблица или карточка
+/**
+ * Функция выбора вида показа - таблица или карточка
+ * @param form
+ */
 
 function showRecs(form) {
- 
   let tbody = document.getElementById("tbody");
   let cards = document.getElementById("cards");
   
@@ -23,10 +25,11 @@ function showRecs(form) {
   }
 }
 
-// Функция запроса и отображения записей в виде таблицы  по фильтру
-
+/**
+ * Функция запроса и отображения записей в виде таблицы  по фильтру
+ * @param form
+ */
 function showRecsTable(form) {
-
     let code = `
       <tr class="t-heads">
         <th>#</th>
@@ -41,7 +44,6 @@ function showRecsTable(form) {
     let free = '';
     let dayStr = '';
     let i = -1;
-    
     const formData = new FormData(form);
     
     fetch("php/getRecs.php", {
@@ -53,7 +55,6 @@ function showRecsTable(form) {
           }else{free = '$'}
 
           let fav = getFavicon(recs.site);
-          
           let day = getDayOfWeek(recs.date);
           dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
           code += `
@@ -68,45 +69,22 @@ function showRecsTable(form) {
         `       
         i = index;
         });
-    
         inform.innerText = 'Найдено экскурсий: ' + String(i+1); 
         tbody.innerHTML = code;
       }) 
 }   
 
-// Функция получения гидов из базы и помещение их в селектор
-
-function loadGuides() {
-  
-  let i = 0;
-  let code = '';
-  let guidesList = document.getElementById("guides-list");
-  
-
-  fetch("php/getGuides.php").then(response=>response.json())
-    .then(result=>{
-    result.forEach((recs)=>{
-      code += `
-       <option value="${recs.id}">${recs.guide}</option>
-      `
-      i++;
-    });
-    code = `<option selected value=" ">Все ${i}</option>` + code;
-    guidesList.innerHTML = code;
-  })
-} 
-
-// Функция запроса и отображения записей в виде карточек  по фильтру
-
+/**
+ * Функция запроса и отображения записей в виде карточек  по фильтру
+ * @param form
+ */
 function showRecsCard(form) {
-
   let code = '';
   let cards = document.getElementById("cards");
   let free = '';
   let dayStr = '';
   let i = -1;
   let fav = ' ';
-  
   const formData = new FormData(form);
   
   fetch("php/getRecs.php", {
@@ -144,25 +122,56 @@ function showRecsCard(form) {
       inform.innerText = 'Найдено экскурсий: ' + String(i+1); 
       cards.innerHTML = code;
     }) 
-}   
-
-function getFavicon(site) {
-  let fav = ' ';
-  if(site == 'Mosstreets'){
-    fav = 'img/mosstreets.png'
-  }else if(site == 'Moscowwalking'){
-    fav = 'img/moscowwalking.png'
-  }else if(site == 'Moscoviti'){
-    fav = 'img/moscoviti.png'
-  }else if(site == 'Tvoyamoskva'){
-    fav = 'img/tvoyamoskva.png' 
-  }else if(site == 'Moskvahod'){
-    fav = 'img/moskvahod.png'
-  }else if(site == 'Moscowsteps'){
-    fav = 'img/moscowsteps.png'} 
-  return(fav);
 }
 
+/**
+ * Функция получения гидов из базы и помещение их в селектор
+ */
+function loadGuides() {
+    let i = 0;
+    let code = '';
+    let guidesList = document.getElementById("guides-list");
+
+    fetch("php/getGuides.php").then(response=>response.json())
+        .then(result=>{
+            result.forEach((recs)=>{
+                code += `
+       <option value="${recs.id}">${recs.guide}</option>
+      `
+                i++;
+            });
+            code = `<option selected value=" ">Все ${i}</option>` + code;
+            guidesList.innerHTML = code;
+        })
+}
+
+/**
+ * Функция возврвщает путь к фавикону соответствующего сайта
+ * @param site
+ * @returns {string}
+ */
+function getFavicon(site) {
+  switch(site) {
+    case 'Mosstreets':
+      return('img/mosstreets.png');
+    case 'Moscowwalking':
+      return('img/moscowwalking.png');
+    case 'Moscoviti' :
+      return('img/moscoviti.png');
+    case 'Tvoyamoskva':
+      return('img/tvoyamoskva.png');
+    case 'Moskvahod' :
+      return('img/moskvahod.png');
+    case 'Moscowsteps':
+      return('img/moscowsteps.png');
+  }
+}
+
+/**
+ * Функция возврвщает сокращённый день недели
+ * @param date
+ * @returns {string}
+ */
 function getDayOfWeek(date) {
   let dateArr = date.split('-'); 
   let objDate = new Date(dateArr[0],dateArr[1]-1,dateArr[2]);
@@ -185,8 +194,10 @@ function getDayOfWeek(date) {
     }
 }
 
+/**
+ * Функция формирует селектор для выбора дат
+ */
 function formDateSelector(){
-  
   let code = `
   <option value="0" selected>Сегодня</option>
   `;
@@ -196,9 +207,7 @@ function formDateSelector(){
   let dayStr = '';
 
   for(i = 1; i <= 9; i++){
-
     now.setDate(now.getDate() + 1);
-
     dayStr = getDateStr(now);
     
     if((dayStr.substr(0,2) == 'Сб') || (dayStr.substr(0,2) == 'Вс')){
@@ -217,8 +226,12 @@ function formDateSelector(){
   daysList.innerHTML = code;
 }
 
+/**
+ * Функция формирует строку даты для показа в карточке
+ * @param day
+ * @returns {string}
+ */
 function getDateStr(day) {
-  
   let month = day.getMonth() + 1;
   let dayOfWeek = day.getDay();
   let dayOfMonth = day.getDate();
@@ -280,6 +293,10 @@ function getDateStr(day) {
   }
 }
 
+/**
+ * Функция показывает модальное окно описания экскурсии
+ * @param exc_id
+ */
 function showModalDescr(exc_id) {
   const formData = new FormData();
 
@@ -293,6 +310,10 @@ function showModalDescr(exc_id) {
       });
 }
 
+/**
+ * Функция показывает модальное окно с презентацией гида
+ * @param guide_id
+ */
 function showModalGuide(guide_id) {
   const formData = new FormData();
 
@@ -306,12 +327,25 @@ function showModalGuide(guide_id) {
       });
 }
 
+/**
+ * Функция отображения модального окна
+ * @param title
+ * @param descr
+ * @param img_src
+ */
 function showModalWindow(title,descr,img_src) {
 
     descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
-    title = title + ':'
+    title += ':'
 
+    // Полоса прокрутки
+    const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+    const widthBefore = document.body.clientWidth;
     document.body.style.overflowY = 'hidden';
+    if (widthBefore !== document.body.clientWidth ) {
+      document.body.style.paddingRight = scrollBarWidth + 'px';
+    }
+
     modal.style.overflowY = 'auto';
     modal.classList.add('active');
     overlay.classList.add('active');
@@ -319,14 +353,13 @@ function showModalWindow(title,descr,img_src) {
     modal_guide.innerText = title;
     modal_img.src = img_src;
     
-    modal_cross.addEventListener('click', ()=>{
+    modal_cross.addEventListener('click', closeModalWindow);
+    overlay.addEventListener('click', closeModalWindow);
+
+    function closeModalWindow() {
       modal.classList.remove('active');
       overlay.classList.remove('active');
-      document.body.style.overflowY = 'auto';
-    });
-    overlay.addEventListener('click', ()=> {
-      modal.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflowY = 'auto';
-    });
+      setTimeout(()=>{document.body.style.paddingRight = 0 + 'px';
+                              document.body.style.overflowY = 'auto'}  ,300);
+    }
 }
