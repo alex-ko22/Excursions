@@ -355,6 +355,9 @@ function showModalWindow(title,descr,img_src) {
     
     modal_cross.addEventListener('click', closeModalWindow);
     overlay.addEventListener('click', closeModalWindow);
+    document.onkeydown = function (event) {
+      if(event.key == 'Escape') closeModalWindow();
+    }
 
     function closeModalWindow() {
       modal.classList.remove('active');
