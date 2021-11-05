@@ -1,5 +1,4 @@
 "use strict";
-
 start();
 
 function start() {

@@ -13,4 +13,5 @@ while( $row = $result->fetch_assoc() ){
     $recs[] = $row;
 }
 
+
 echo json_encode($recs, JSON_UNESCAPED_UNICODE);
