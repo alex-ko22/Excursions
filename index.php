@@ -63,7 +63,6 @@
         <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 row-cols-xl-6 gy-2 justify-content-center"></div>
       </div> 
       <hr>
-      
       <!-- Подложка под модальным окном -->
       <div id="overlay"></div>
       <!-- Модальное окно -->
