@@ -1,84 +1,19 @@
 "use strict";
 
-let btn = document.getElementById('btn');
+start();
 
-loadGuides();
-formDateSelector();
-setTimeout(()=>{btn.click();},1000);
-
-/**
- * Функция выбора вида показа - таблица или карточка
- * @param form
- */
-
-function showRecs(form) {
-  let tbody = document.getElementById("tbody");
-  let cards = document.getElementById("cards");
-  
-  tbody.innerHTML = '';
-  cards.innerHTML = '';
-   
-  if(modeTable.checked){
-    showRecsTable(form);
-  }else{
-    showRecsCard(form);
-  }
+function start() {
+  let form = document.getElementById('form');
+  loadGuides();
+  formDateSelector();
+  setTimeout(()=>showRecs(form),1000)
 }
-
-/**
- * Функция запроса и отображения записей в виде таблицы  по фильтру
- * @param form
- */
-function showRecsTable(form) {
-    let code = `
-      <tr class="t-heads">
-        <th>#</th>
-        <th><em>Название</em></th>
-        <th>$</th>
-        <th><em>Экскурсовод</em></th>
-        <th><em>Дата и время</em></th>
-        <th><em>Перейти к экскурсии:</em></th>
-      </tr>
-    `;
-    let tbody = document.getElementById("tbody");
-    let free = '';
-    let dayStr = '';
-    let i = -1;
-    const formData = new FormData(form);
-    
-    fetch("php/getRecs.php", {
-      method: "POST",
-      body: formData
-    }).then(response=>response.json())
-      .then(result=>{result.forEach((recs,index)=>{
-          if (recs.free == 1){free = ''
-          }else{free = '$'}
-
-          let fav = getFavicon(recs.site);
-          let day = getDayOfWeek(recs.date);
-          dayStr = day + recs.date.substr(8,2) + "." + recs.date.substr(5,2) + " в " + recs.time.substr(0,5); 
-          code += `
-          <tr class="t-row">
-            <td>${index+1}</td>
-            <td class="title" onclick="showModalDescr(${recs.exc_id})">${recs.title}</td>
-            <td>${free}</td>            
-            <td class="guide" onclick="showModalGuide(${recs.guide_id})">${recs.guide}</td>
-            <td>${dayStr}</td>
-            <td><img class = "favicon" alt=" " src = "${fav}"><a href="${recs.link}" onclick="window.open(this.href, '_blank'); return false;">${recs.site}</a></td>
-          </tr>
-        `       
-        i = index;
-        });
-        inform.innerText = 'Найдено экскурсий: ' + String(i+1); 
-        tbody.innerHTML = code;
-      }) 
-}   
 
 /**
  * Функция запроса и отображения записей в виде карточек  по фильтру
  * @param form
  */
-function showRecsCard(form) {
+function showRecs(form) {
   let code = '';
   let cards = document.getElementById("cards");
   let free = '';
@@ -119,7 +54,7 @@ function showRecsCard(form) {
       ` 
       i = index;
       });
-      inform.innerText = 'Найдено экскурсий: ' + String(i+1); 
+      inform.textContent = i + 1;
       cards.innerHTML = code;
     }) 
 }
@@ -140,7 +75,7 @@ function loadGuides() {
       `
                 i++;
             });
-            code = `<option selected value=" ">Все ${i}</option>` + code;
+            code = `<option selected value="All">Все ${i}</option>` + code;
             guidesList.innerHTML = code;
         })
 }
@@ -221,7 +156,7 @@ function formDateSelector(){
     }
   }
   code += `
-  <option value="100">${'На ' + i + ' дней'}</option>
+  <option value="10">На 10 дней</option>
    `   
   daysList.innerHTML = code;
 }
@@ -306,7 +241,7 @@ function showModalDescr(exc_id) {
     body: formData
     }).then(response=>response.json())
       .then(result => {
-        showModalWindow(result.guide,result.descr,result.img_url);
+        showModalWindow(1,result.guide,result.descr,result.img_url);
       });
 }
 
@@ -323,7 +258,7 @@ function showModalGuide(guide_id) {
     body: formData
     }).then(response=>response.json())
       .then(result => {
-        showModalWindow(result.guide,result.about,result.src_foto);
+        showModalWindow(2, result.guide,result.about,result.src_foto);
       });
 }
 
@@ -333,10 +268,13 @@ function showModalGuide(guide_id) {
  * @param descr
  * @param img_src
  */
-function showModalWindow(title,descr,img_src) {
+function showModalWindow(mode, title,descr,img_src) {
 
-    descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
-    title += ':'
+    //descr = String.fromCharCode(171) + ' — ' + descr + ' ' + String.fromCharCode(187);
+    if (mode == 1) {
+      descr = '<q>' + ' — ' + descr + "</q>";
+      title += ':'
+    }
 
     // Полоса прокрутки
     const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;

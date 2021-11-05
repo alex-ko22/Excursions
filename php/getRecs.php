@@ -6,29 +6,27 @@
     require_once('db.php');
     global $mysqli;
 
-    if(($site = $_POST['site']) != ' '){
+    if(($site = $_POST['site']) != 'All'){
         $site = ' AND `site` = "'.$site.'"';
-     }
+     }else $site = '';
 
-    if(array_key_exists('free1',$_POST) && !(array_key_exists('free2',$_POST))){
+    if(($free = $_POST['type']) == 'Free') {
         $free = ' AND `free` = "1"';
-    }elseif(array_key_exists('free2',$_POST) && !(array_key_exists('free1',$_POST))){
+    }elseif($free == 'Notfree') {
         $free = ' AND `free` = "0"';
-    }elseif(!(array_key_exists('free2',$_POST)) && !(array_key_exists('free1',$_POST))){
-        $free = ' AND `free` = "Zero"';    
-    }else{
+    }else {
         $free = '';
     }
-    
-    if (($date = $_POST['date']) == '100'){
+
+    if (($date = $_POST['date']) == '10'){
         $date = '`date` BETWEEN CURRENT_DATE AND (DATE_ADD(CURRENT_DATE, INTERVAL '.$date.' DAY))';     
     }else{
         $date = '`date` = DATE_ADD(CURRENT_DATE(), INTERVAL '.$date.' DAY)';
     }
    
-    if(($guide = $_POST['guide']) != ' '){
+    if(($guide = $_POST['guide']) != 'All'){
         $guide = ' AND `guide_id` = '.$guide;
-    } 
+    } else $guide = '';
 
     // Формируем запрос 
     $where = $date.$guide.$site.$free.' ORDER BY `date`, `time`';

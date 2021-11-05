@@ -28,79 +28,38 @@
   </head>
   <body>
     <div class="container">
-      <div class="row header my-3 position-relative">
+      <div class="row header my-2 position-relative">
         <img src="img/moscow_main.jpg" id="main-image" class="img-fluid px-0" alt="">
-        <!-- <a href="#" onclick="showModalWindow('О проекте','about'); return false" class="about position-absolute top-0 start-0">О проекте</a>  -->
         <div class="position-absolute top-50 start-0 text-center">
           <h1 class="d-none d-sm-block" id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h1>
           <h2 class="d-sm-none" id="text">ВСЕ ЭКСКУРСИИ МОСКВЫ</h2>
         </div>
       </div>
-      <form class="filter bg-light" id="form" onsubmit="showRecs(this); return false;">
-          <div class="row row-cols-sm-4">
-            <div class="filter-free" >
-              <p class="mb-1">Тип</p>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="1" name="free1" id="free" checked>
-                  <label class="form-check-label" for="free">
-                    Бесплатная 
-                  </label>
-              </div>
-              <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="2" name="free2" id="notfree" checked>
-                  <label class="form-check-label" for="notfree">
-                    Платная
-                  </label>
-              </div>
-            </div>
-            <div class="filter-site" >
-              <p class="mb-1">Сайты</p>
-              <select class="form-select" name="site" aria-label="Default select example">
-                <option selected value=" ">Все 6</option>
-                <option id="ms" value="Mosstreets">Mosstreets</option>
-                <option value="Moscowwalking">Moscowwalking</option>
-                <option value="Tvoyamoskva">Tvoyamoskva</option>
-                <option value="Moscoviti">Moscoviti</option>
-                <option value="Moskvahod">Moskvahod</option>
-                <option value="Moscowsteps">Moscowsteps</option>
-              </select>
-            </div>
-            <div class="filter-date col">
-              <p class="mb-1">Дата</p>
-              <select class="form-select" aria-label="Default select example" name="date" id="days-list"></select>
-            </div>
-            <div class="filter-guide">
-              <p class="mb-1">Экскурсовод</p>
-              <select class="form-select" aria-label="Default select example" name="guide" id="guides-list"></select>
-            </div>
-          </div>
-          <div class="row my-3 row-submit row-cols-2 row-cols-md-4">
-                      
-            <div class="mt-1 text-end">Показывать в виде:</div>
-            <div> 
-              <div class="form-check mt-0">
-                <input class="form-check-input" type="radio" name="mode" value="C" id="modeCard" onclick="showRecs(form)" checked>
-                <label class="form-check-label" for="flexRadioDefault2">
-                  Карточек
-                </label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="mode" value="T" id="modeTable" onclick="showRecs(form)">
-                <label class="form-check-label" for="flexRadioDefault1">
-                  Таблицы
-                </label>
-              </div>  
-            </div>
-            <div>
-              <button type="submit" id="btn" class="btn btn-primary mt-1">Показать</button>
-            </div>     
-            <div>
-              <p id="inform" class="mt-1 text-end"></p>
-            </div>     
-          </div>
+
+      <form id="form" class="row my-2 info" onsubmit="showRecs(this); return false;">
+        <ul id="list">
+          <li class="info-line">Тип: <select name="type">
+              <option selected value="All">Все</option>
+              <option value="Free">Бесплатные</option>
+              <option value="Notfree">Платные</option>
+            </select></li>
+          <li class="info-line">Сайт: <select name="site">
+              <option selected value="All">Все</option>
+              <option value="Mosstreets">Mosstreets</option>
+              <option value="Moscowwalking">Moscowwalking</option>
+              <option value="Tvoyamoskva">Tvoyamoskva</option>
+              <option value="Moscoviti">Moscoviti</option>
+              <option value="Moskvahod">Moskvahod</option>
+              <option value="Moscowsteps">Moscowsteps</option>
+            </select></li>
+          <li class="info-line">Дата: <select name="date" id="days-list"></select></li>
+          <li class="info-line">Экскурсовод: <select name="guide" id="guides-list"></select></li>
+          <li class="info-line"><button type="submit" id="btn">Применить</button></li>
+          <li class="info-line" id="info-count">Найдено экскурсий:  <span id="inform"></span></li>
+        </ul>
       </form>
+
       <div class="content">
-        <table class="table table-striped" id="tbody"></table>
         <div id="cards" class="row row-cols-2 row-cols-sm-3 row-cols-lg-5 row-cols-xl-6 gy-2 justify-content-center"></div>
       </div> 
       <hr>
@@ -114,8 +73,6 @@
         <img id="modal_img" src="" alt=""  class="img-fluid">
         <p id="modal_content"></p>
       </div>
-      
-    
     </div>
     <div class="footer">
         <p id="copiright">© 2021 Copyright: AEK</p>

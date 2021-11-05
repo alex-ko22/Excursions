@@ -14,13 +14,12 @@
 }
 .title:hover {
     color:cadetblue;
-    
 }
 .header {
     min-height: 50px; 
 }
 #inform {
-    color:rgb(3, 49, 3);
+    color:green;
 }
 #text {
     color:cornsilk;
@@ -34,9 +33,7 @@
     max-height:10vh; 
     text-align: center;
     min-height: 40px;
-}
-.t-heads th {
-    color:darkgray;
+    font-size: 0.8em;
 }
 
 .favicon {
@@ -60,19 +57,9 @@
     margin-bottom:10px;
 }
 
-.about {
-    color: midnightblue;
-    text-decoration: none;
-}
-
-/* Стили для подложки */
-
 #overlay {
-   
-    /* Скрываем подложку  */
     opacity: 0;
     visibility: hidden;
-    
     position: fixed;
     top: 0;
     left: 0;
@@ -83,36 +70,25 @@
     transition: .3s all;
  }
  #modal {
-   
-    /* Скрываем окна  */
     opacity: 0;
     visibility: hidden;
-     
-    /*  Установаем ширину окна  */
+
     min-width: 60%;
-    /* max-width: 80vh; */
     max-height: 80vh;
-    
-    /*  Центрируем и задаем z-index */
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%); 
-    z-index: 30; /* Должен быть выше чем у подложки*/
+    z-index: 30;
     
     /*  Побочные стили   */
-    /* box-shadow: 0 3px 10px -.5px rgba(0, 0, 0, .2);  */
     box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
     text-align: justify; 
     padding: 25px;
     border-radius: 5px;
     background: linear-gradient(to bottom, #fefcea, #e6f1f7); 
     transition: 0.3s all;
-
-    /* display:flexbox; */
  }
- 
- /* Стили для кнопки закрытия */
  
  #modal_cross {
     width: 20px;
@@ -144,4 +120,31 @@
 }
 #share {
     padding-top: 5px;
+}
+
+.info-line {
+    display: inline;
+    padding: 2px;
+    font-size: 0.8em;
+}
+
+#list {
+    padding-top: 5px;
+}
+
+#info-count {
+    float: right;
+}
+
+.info {
+    box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
+    background: linear-gradient(to bottom, #fefcea, #e6f1f7);
+    padding-top: 5px;
+    border-radius: 5px;
+}
+
+#btn {
+    border-radius: 5px;
+    margin-left: 20px;
+    color:green;
 }
