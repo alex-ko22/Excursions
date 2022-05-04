@@ -11,7 +11,7 @@ class Parse{
         global $mysqli;
         global $fOpen;
            
-        $html = file_get_html('http://moscowwalking.ru/#schedule');
+        $html = file_get_html('https://moscowwalking.ru/#schedule');
         $i = 0;
         $startTime = time();
         
@@ -19,7 +19,7 @@ class Parse{
             $dateStr = $div->find('div.t145__title.t-title',0)->plaintext;
             $day = substr($dateStr,0,2);
             $date = Parse::formDateMonth($dateStr,$day);
-            $option = Parse::checkDate($date); 
+            $option = Parse::checkDate($date);
             if ($option == 1){
                 continue;
             }elseif($option == 2){
@@ -27,25 +27,25 @@ class Parse{
             }
 
             $site = 'Moscowwalking';
-    
+
             foreach($div->find('strong') as $divmini){
-                $link = 'http://moscowwalking.ru'.$divmini->find('a',0)->href;
+                $link = 'https://moscowwalking.ru'.$divmini->find('a',0)->href;
                 $htmlInner = str_get_html(file_get_html( $link ));
                 if(!get_headers($link, 1)){
                     continue;
                  }
                 $urlInner = $htmlInner->find('div[data-img-zoom-url]',0);
                 $url = explode("'",$urlInner);
-                $img_url = 'http://moscowwalking.ru'.$url[1];
-                
-                $url_tmp = Parse::saveImgFile($img_url); 
+                $img_url = 'https://moscowwalking.ru'.$url[1];
+
+                $url_tmp = Parse::saveImgFile($img_url);
                 if ($url_tmp != '0'){
                     $img_url = $url_tmp;
                 }
 
                 $descr = $htmlInner->find('div.t232__text.t-text.t-text_sm',0)->plaintext;
-                $descr = Parse::reduceDescr($descr);             
-    
+                $descr = Parse::reduceDescr($descr);
+
                 $time = substr($divmini,18,5).':00';
                 $title = $divmini->find('a',0)->plaintext;
                 if (strpos($title,'Платная')) {$free = false;
@@ -53,19 +53,19 @@ class Parse{
                 if(substr($title,-1,1) == ')'){
                     $title = mb_substr($title,0,-9);
                 }
-    
+
                 $guide = $divmini->find('span',0)->plaintext;
                 $guideStr = explode(' ',$guide);
                 $guide = $guideStr[1].' '.$guideStr[0];
                 $guideId = Parse::getGuideId($guide);
-    
+
                 $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
                     VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
                 $i++;
             }
         }
         fwrite($fOpen,'Received records from Moscowwalking.ru: '.$i);
-        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");    
+        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
     }
 
     /**
@@ -79,15 +79,11 @@ class Parse{
         $i = 0;
         $site = 'Mosstreets';
         $startTime = time();
-    
+
         foreach($html->find('div.trio') as $div){
             $dateStr= $div->find('div.desc p',1)->plaintext;
             $year = getdate(strtotime('today'))['year'];
             $date = $year.'-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
-
-            if (getdate(strtotime($date))['yday'] < DAYS_SHIFT) {
-                $date = ($year + 1).'-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
-            }
             $time = substr($dateStr,16,5).':00';
 
             $option = Parse::checkDate($date);
@@ -205,6 +201,7 @@ class Parse{
                 $link = 'https://moscoviti.ru/product/'.$link;
             }
 
+            if($link == 'https://moscoviti.ru/dmitrovskij-kraj-i-ego-stolicza/') continue;
             $htmlInner = file_get_html( $link );
             $dateStr = $htmlInner->find('tbody p',0)->innertext;
             $day = (explode(' ',$dateStr)[1]);
@@ -369,17 +366,16 @@ class Parse{
         if (strlen($day) == 1){
             $day = '0'.$day;
         }
-
         $arrDate = getdate(strtotime('today'));
         $year = $arrDate['year'];
-        if (($arrDate['yday'] + DAYS_SHIFT) > 365) $year = $year + 1;
+        if ((($arrDate['yday'] + DAYS_SHIFT) >= 365) && $day <= DAYS_SHIFT) $year = $year + 1;
         $dateStr = mb_strtolower($dateStr);
 
         if (strpos($dateStr,'январ') !== false) {$date = $year.'-01-'.$day;
             }elseif(strpos($dateStr,'феврал') !== false) {$date = $year.'-02-'.$day;
             }elseif(strpos($dateStr,'март') !== false) {$date = $year.'-03-'.$day;
             }elseif(strpos($dateStr,'апрел') !== false) {$date = $year.'-04-'.$day;
-            }elseif(strpos($dateStr,'мая') !== false || strpos($dateStr,'май') != false) {$date = $year.'-05-'.$day;
+            }elseif(strpos($dateStr,'мая') !== false || strpos($dateStr,'май') !== false) {$date = $year.'-05-'.$day;
             }elseif(strpos($dateStr,'июн') !== false) {$date = $year.'-06-'.$day;
             }elseif(strpos($dateStr,'июл') !== false) {$date = $year.'-07-'.$day;
             }elseif(strpos($dateStr,'август') !== false) {$date = $year.'-08-'.$day;
