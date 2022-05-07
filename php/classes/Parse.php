@@ -186,7 +186,8 @@ class Parse{
     /**
      * Парсинг сайта moscoviti.ru
      */
-    public static function parseMV(){
+    public static function parseMV()
+    {
         global $mysqli;
         global $fOpen;
 
@@ -194,55 +195,66 @@ class Parse{
         $i = 0;
         $site = 'Moscoviti';
         $startTime = time();
+        $cancel = false;
 
-        foreach($html->find('span.tg-block') as $div){
-            $link = $div->find('a',0)->href;
-            if(mb_substr($link,0,3) != 'htt') {
-                $link = 'https://moscoviti.ru/product/'.$link;
+        foreach ($html->find('div.elementor-text-editor.elementor-clearfix') as $divBig) {
+            $found = $divBig->find('span.tg-block', 0);
+            if ($found !== null) {
+                foreach ($divBig->find('span.tg-block') as $div) {
+                    $link = $div->find('a', 0)->href;
+                    if (mb_substr($link, 0, 3) != 'htt') {
+                        $link = 'https://moscoviti.ru/product/' . $link;
+                    }
+
+                    $htmlInner = file_get_html($link);
+                    if(!$htmlInner) continue;
+                    $dateStr = $htmlInner->find('tbody p', 0)->innertext;
+                    $day = (explode(' ', $dateStr)[1]);
+                    if (!ctype_digit($day)) {
+                        continue;
+                    }
+
+                    $date = Parse::formDateMonth($dateStr, $day);
+                    $time = explode('в ', $dateStr)[1] . ':00';
+                    $option = Parse::checkDate($date);
+                    if ($option == 1) {
+                        break;
+                    } elseif ($option == 2) {
+                        $cancel = true;
+                        break;
+                    }
+                    $title = $div->find('a', 0)->plaintext;
+                    $url = explode('url(', ($htmlInner->find('div.elementor-cta__bg.elementor-bg', 0)->getAttribute('style')));
+                    $img_url = mb_substr($url[1], 0, -2);
+                    $url_tmp = Parse::saveImgFile($img_url);
+                    if ($url_tmp != '0') {
+                        $img_url = $url_tmp;
+                    }
+
+                    if (($htmlInner->find('tbody p', 3)->innertext) == 'бесплатная') {
+                        $free = true;
+                    } else {
+                        $free = false;
+                    }
+
+                    $guide = $htmlInner->find('tbody p', 4)->innertext;
+                    $guideStr = explode(' ', $guide);
+                    $guide = $guideStr[1] . ' ' . $guideStr[0];
+                    $guideId = Parse::getGuideId($guide);
+
+                    $descr = $htmlInner->find('div[role=tabpanel] p', 0)->innertext;
+                    $descr = Parse::reduceDescr($descr);
+
+                    $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+                     VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
+                    $i++;
+                }
             }
-
-            if($link == 'https://moscoviti.ru/dmitrovskij-kraj-i-ego-stolicza/') continue;
-            $htmlInner = file_get_html( $link );
-            $dateStr = $htmlInner->find('tbody p',0)->innertext;
-            $day = (explode(' ',$dateStr)[1]);
-            if(!ctype_digit($day)){
-                continue;
-            }
-
-            $date = Parse::formDateMonth($dateStr,$day);
-            $time = explode('в ',$dateStr)[1].':00';
-            $option = Parse::checkDate($date);
-            if ($option == 1){
-                continue;
-            }elseif($option == 2){
-                break;
-            }
-            $title = $div->find('a',0)->plaintext;
-            $url = explode('url(',($htmlInner->find('div.elementor-cta__bg.elementor-bg',0)->getAttribute('style')));
-            $img_url = mb_substr($url[1],0,-2);
-            $url_tmp = Parse::saveImgFile($img_url);
-            if ($url_tmp != '0'){
-                $img_url = $url_tmp;
-            }
-
-            if(($htmlInner->find('tbody p',3)->innertext) == 'бесплатная'){
-                $free = true;
-            }else {$free = false;}
-
-            $guide = $htmlInner->find('tbody p',4)->innertext;
-            $guideStr = explode(' ',$guide);
-            $guide = $guideStr[1].' '.$guideStr[0];
-            $guideId = Parse::getGuideId($guide);
-
-            $descr = $htmlInner->find('div[role=tabpanel] p',0)->innertext;
-            $descr = Parse::reduceDescr($descr);
-
-            $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
-            VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
-            $i++;
+            if ($cancel === true) break;
         }
-        fwrite($fOpen,'Received records from Moscoviti.ru: '.$i);
-        fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
+        fwrite($fOpen, 'Received records from Moscoviti.ru: ' . $i);
+        fwrite($fOpen, '  Execution time: ' . (time() - $startTime) . ' secs' . "\n");
+
     }
 
     /**
