@@ -147,37 +147,42 @@ class Parse{
                 break;
             }
 
-            $strTime = $div->find('p.schedule-excursion__time',0)->plaintext;
-            $time = substr($strTime,0,5).':00';
+            foreach($div->find('li.schedule-excursion__info-item') as $divInner ) {
+                $strTime = $divInner->find('p.schedule-excursion__time', 0)->plaintext;
+                $time = substr($strTime, 0, 5) . ':00';
 
-            $title = $div->find('a.schedule-excursion__name',0)->plaintext;
-            $link = $div->find('a.schedule-excursion__name',0)->href;
-            if(!get_headers($link, 1)){
-                continue;
+                $title = $divInner->find('a.schedule-excursion__name', 0)->plaintext;
+                $link = $divInner->find('a.schedule-excursion__name', 0)->href;
+                if (!get_headers($link, 1)) {
+                    continue;
+                }
+                $guide = $divInner->find('p.schedule-excursion__guide', 0)->plaintext;
+                $guideStr = explode(' ', $guide);
+                $guide = $guideStr[1] . ' ' . $guideStr[0];
+                $guideId = Parse::getGuideId($guide);
+
+                $htmlInner = file_get_html($link);
+                $img_url = $htmlInner->find('img', 0)->getAttribute('src');
+                if ($img_url == '') {
+                    $img_url = $htmlInner->find('img', 1)->getAttribute('src');
+                }
+
+                if(strpos($img_url,'informer.yandex') !== false) $img_url = '../img/exc_imgs/sample.jpeg';
+
+                $url_tmp = Parse::saveImgFile($img_url);
+                if ($url_tmp != '0') {
+                    $img_url = $url_tmp;
+                }
+                $descr1 = $htmlInner->find('div.about-excursion__description p', 3)->plaintext;
+                $descr2 = $htmlInner->find('div.about-excursion__description p', 4)->plaintext;
+                $descr = Parse::reduceDescr($descr1 . $descr2);
+
+                $free = true;
+
+                $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
+                VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
+                $i++;
             }
-            $guide = $div->find('p.schedule-excursion__guide',0)->plaintext;
-            $guideStr = explode(' ',$guide);
-            $guide = $guideStr[1].' '.$guideStr[0];
-            $guideId = Parse::getGuideId($guide);
-
-            $htmlInner = file_get_html( $link );
-            $img_url = $htmlInner->find('img',0)->getAttribute('src');
-            if($img_url == ''){
-                $img_url = $htmlInner->find('img',1)->getAttribute('src');
-            }
-            $url_tmp = Parse::saveImgFile($img_url);
-            if ($url_tmp != '0'){
-                $img_url = $url_tmp;
-            }
-            $descr1 = $htmlInner->find('div.about-excursion__description p',3)->plaintext;
-            $descr2 = $htmlInner->find('div.about-excursion__description p',4)->plaintext;
-            $descr = Parse::reduceDescr($descr1.$descr2);
-
-            $free = true;
-
-            $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
-            VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
-            $i++;
         }
         fwrite($fOpen,'Received records from Tvoyamoskva.com: '.$i);
         fwrite($fOpen,'  Execution time: '.(time() - $startTime).' secs'."\n");
