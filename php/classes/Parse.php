@@ -200,37 +200,32 @@ class Parse{
         $i = 0;
         $site = 'Moscoviti';
         $startTime = time();
-        $cancel = false;
+        $found = false;
 
-        foreach ($html->find('div.elementor-text-editor.elementor-clearfix') as $divBig) {
-            $found = $divBig->find('span.tg-block', 0);
-            if ($found !== null) {
-                foreach ($divBig->find('span.tg-block') as $div) {
-                    $link = $div->find('a', 0)->href;
+        foreach ($html->find('p') as $div) {
+            $pStr = $div->plaintext;
+            $option = Parse::defineDate($pStr);
+
+            if($option == 'wrong_date'){
+                if($found) break;
+               // else continue;
+            }elseif($option == 'link'){
+                if($found) {
+                    $link = $div->find('a',0)->href;
                     if (mb_substr($link, 0, 3) != 'htt') {
                         $link = 'https://moscoviti.ru/product/' . $link;
                     }
-
                     $htmlInner = file_get_html($link);
                     if(!$htmlInner) continue;
-                    $dateStr = $htmlInner->find('tbody p', 0)->innertext;
-                    $day = (explode(' ', $dateStr)[1]);
-                    if (!ctype_digit($day)) {
-                        continue;
+                    $title = $div->find('a', 0)->plaintext;
+                    $time = explode(' ',$div->plaintext)[0];
+                    $url = explode('url(', ($htmlInner->find('div.elementor-cta__bg.elementor-bg', 0)->getAttribute('style')));
+                    if(mb_substr($url[1],-1) == ';') {
+                        $img_url = mb_substr($url[1], 0, -2);
+                    }else{
+                        $img_url = mb_substr($url[1], 0, -1);
                     }
 
-                    $date = Parse::formDateMonth($dateStr, $day);
-                    $time = explode('в ', $dateStr)[1] . ':00';
-                    $option = Parse::checkDate($date);
-                    if ($option == 1) {
-                        break;
-                    } elseif ($option == 2) {
-                        $cancel = true;
-                        break;
-                    }
-                    $title = $div->find('a', 0)->plaintext;
-                    $url = explode('url(', ($htmlInner->find('div.elementor-cta__bg.elementor-bg', 0)->getAttribute('style')));
-                    $img_url = mb_substr($url[1], 0, -2);
                     $url_tmp = Parse::saveImgFile($img_url);
                     if ($url_tmp != '0') {
                         $img_url = $url_tmp;
@@ -251,15 +246,26 @@ class Parse{
                     $descr = Parse::reduceDescr($descr);
 
                     $mysqli->query("INSERT INTO `excursion`(`site`, `date`, `time`, `title`, `guide_id`, `img_url`, `free`, `link`, `descr`)
-                     VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
+                       VALUES ('$site','$date','$time','$title','$guideId','$img_url','$free','$link','$descr')");
                     $i++;
                 }
+            }else {
+                $date = $option;
+                $found = true;
             }
-            if ($cancel === true) break;
         }
         fwrite($fOpen, 'Received records from Moscoviti.ru: ' . $i);
         fwrite($fOpen, '  Execution time: ' . (time() - $startTime) . ' secs' . "\n");
+    }
 
+    public static function defineDate($pStr) {
+        $arrString = explode(' ',$pStr);
+        if(mb_strtolower($arrString[0]) == 'суббота,' || mb_strtolower($arrString[0]) == 'воскресенье,') {
+            $date = Parse::formDateMonth($arrString[2],$arrString[1]);
+            $option = Parse::checkDate($date);
+            if($option == 0) return $date;
+            else return 'wrong_date';
+        } else return 'link';
     }
 
     /**
