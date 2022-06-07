@@ -54,7 +54,7 @@ class Parse{
                     $title = mb_substr($title,0,-9);
                 }
 
-                $guide = $divmini->find('span',0)->plaintext;
+                $guide = $divmini->find('a.guides',0)->plaintext;
                 $guideStr = explode(' ',$guide);
                 $guide = $guideStr[1].' '.$guideStr[0];
                 $guideId = Parse::getGuideId($guide);
