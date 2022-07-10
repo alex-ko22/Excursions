@@ -46,7 +46,7 @@ class Parse{
                 $descr = $htmlInner->find('div.t232__text.t-text.t-text_sm',0)->plaintext;
                 $descr = Parse::reduceDescr($descr);
 
-                $time = substr($divmini,18,5).':00';
+                $time = $divmini->plaintext;
                 $title = $divmini->find('a',0)->plaintext;
                 if (strpos($title,'Платная')) {$free = false;
                 }else {$free = true;}
