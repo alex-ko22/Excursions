@@ -74,7 +74,7 @@
       </div>
     </div>
     <div class="footer">
-        <p id="copiright">© 2021 Copyright: AEK</p>
+        <p id="copiright">© 2023 Copyright: AEK</p>
         <img src="img/envelope.svg" alt="">
         <p id="email">mos-guides@mail.ru</p>
         <p id="share" class="ya-share2" data-services="vkontakte,twitter,facebook,viber,whatsapp,telegram"></p>

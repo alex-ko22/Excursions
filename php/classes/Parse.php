@@ -82,8 +82,10 @@ class Parse{
 
         foreach($html->find('div.trio') as $div){
             $dateStr= $div->find('div.desc p',1)->plaintext;
-            $year = getdate(strtotime('today'))['year'];
-            $date = $year.'-'.substr($dateStr,3,2).'-'.substr($dateStr,0,2);
+            $day = substr($dateStr,0,2);
+            //$year = getdate(strtotime('today'))['year'];
+            $year = Parse::getYear($day);
+            $date = $year.'-'.substr($dateStr,3,2).'-'.$day;
             $time = substr($dateStr,16,5).':00';
 
             $option = Parse::checkDate($date);
@@ -260,7 +262,9 @@ class Parse{
 
     public static function defineDate($pStr) {
         $arrString = explode(' ',$pStr);
-        if(mb_strtolower($arrString[0]) == 'суббота,' || mb_strtolower($arrString[0]) == 'воскресенье,') {
+        $weekDay = mb_strtolower($arrString[0]);
+        if($weekDay == 'суббота,' || $weekDay == 'воскресенье,' || $weekDay == 'понедельник,' || $weekDay == 'вторник,'
+            || $weekDay == 'среда,' || $weekDay == 'четверг,' || $weekDay == 'пятница,') {
             $date = Parse::formDateMonth($arrString[2],$arrString[1]);
             $option = Parse::checkDate($date);
             if($option == 0) return $date;
@@ -389,9 +393,8 @@ class Parse{
         if (strlen($day) == 1){
             $day = '0'.$day;
         }
-        $arrDate = getdate(strtotime('today'));
-        $year = $arrDate['year'];
-        if ((($arrDate['yday'] + DAYS_SHIFT) >= 365) && $day <= DAYS_SHIFT) $year = $year + 1;
+
+        $year = Parse::getYear($day);
         $dateStr = mb_strtolower($dateStr);
 
         if (strpos($dateStr,'январ') !== false) {$date = $year.'-01-'.$day;
@@ -490,6 +493,13 @@ class Parse{
         if (file_put_contents($filePath, file_get_contents($img_url))){ 
             return (substr($filePath,3));
         }else return '0';
+    }
+
+    public static function getYear($day) {
+        $arrDate = getdate(strtotime('today'));
+        $year = $arrDate['year'];
+        if ((($arrDate['yday'] + DAYS_SHIFT) >= 365) && $day <= DAYS_SHIFT) $year = $year + 1;
+        return $year;
     }
 
 }
